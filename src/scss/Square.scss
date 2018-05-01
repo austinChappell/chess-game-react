@@ -1,0 +1,19 @@
+.Square {
+  width: 75px;
+  height: 75px;
+  border: 1px solid black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  &.dark {
+    background-color: #7D574B;
+  }
+  &.light {
+    background-color: #FCD3A4;
+  }
+  .chess-piece {
+    height: 50px;
+  }
+}

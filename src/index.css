@@ -1,0 +1,28 @@
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; }
+
+.Board {
+  border: 30px solid #382624;
+  border-radius: 5px; }
+
+.Row {
+  display: flex; }
+
+.Square {
+  width: 75px;
+  height: 75px;
+  border: 1px solid black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px; }
+  .Square.dark {
+    background-color: #7D574B; }
+  .Square.light {
+    background-color: #FCD3A4; }
+  .Square .chess-piece {
+    height: 50px; }
