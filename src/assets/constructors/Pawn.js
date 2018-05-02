@@ -39,17 +39,20 @@ class Pawn extends ChessPiece {
 
       if (hasMoved) {
         this.maxY = orientation > 0 ? orientation : 0;
-        this.minY = orientation < 0 ? orientation : 0;            
+        this.minY = orientation < 0 ? 0 : orientation;
       } else {
         this.maxY = orientation > 0 ? orientation * 2 : 0;
-        this.minY = orientation < 0 ? orientation * 2 : 0;            
+        this.minY = orientation < 0 ? 0 : orientation * 2;            
       }
 
       this.currentMoves = squares.filter((square, index) => {
+        const occupiedByOpp = square.piece && square.piece.color !== this.color;
+        const realMaxCol = occupiedByOpp ? maxCol : maxCol - 1;
+        const realMinCol = occupiedByOpp ? minCol : minCol + 1;
         const lessThanMaxRow = square.row <= maxRow;
         const moreThanMinRow = square.row >= minRow;
-        const lessThanMaxCol = square.column <= maxCol;
-        const moreThanMinCol = square.column >= minCol;
+        const lessThanMaxCol = square.column <= realMaxCol;
+        const moreThanMinCol = square.column >= realMinCol;
         const inRowRange = lessThanMaxRow && moreThanMinRow;
         const inColRange = lessThanMaxCol && moreThanMinCol;
 

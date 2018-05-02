@@ -24,9 +24,9 @@ class Board extends Component {
       squareWidth,
     } = this.props;
 
-    console.log('PIECES', pieces);
-
     const boardWidth = squareWidth * 8;
+
+    console.log('PIECES', pieces);
 
     return (
       <Fragment>
@@ -38,11 +38,6 @@ class Board extends Component {
           }}
         >
           {pieces.map((piece, index) => {
-            const {
-              column,
-              row,
-            } = piece;
-
             // find the square that the piece is on
             const foundSquare = findSquareByPiece(pieces, squares, piece);
 
@@ -60,15 +55,13 @@ class Board extends Component {
           })}
           {squares.map((square, index) => {
             const {
-              column,
               top,
               left,
-              row,
             } = square;
 
             // mark a square as occupied
             const foundPiece = findPieceBySquare(squares, pieces, square);
-            square.occupied = foundPiece !== null;
+            square.piece = foundPiece;
 
             const evenRow = top % (squareWidth * 2) === 0;
             const evenColumn = left % (squareWidth * 2) === 0;
