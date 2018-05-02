@@ -6,24 +6,24 @@ import Square from './Square';
 class Board extends Component {
   state = {
     boardRows: [
-      { label: 'A', top: 0 * 80 },
-      { label: 'B', top: 1 * 80 },
-      { label: 'C', top: 2 * 80 },
-      { label: 'D', top: 3 * 80 },
-      { label: 'E', top: 4 * 80 },
-      { label: 'F', top: 5 * 80 },
-      { label: 'G', top: 6 * 80 },
-      { label: 'H', top: 7 * 80 },
+      { label: 1, top: 0 * 80 },
+      { label: 2, top: 1 * 80 },
+      { label: 3, top: 2 * 80 },
+      { label: 4, top: 3 * 80 },
+      { label: 5, top: 4 * 80 },
+      { label: 6, top: 5 * 80 },
+      { label: 7, top: 6 * 80 },
+      { label: 8, top: 7 * 80 },
     ],
     boardColumns: [
-      { label: '1', left: 0 * 80 },
-      { label: '2', left: 1 * 80 },
-      { label: '3', left: 2 * 80 },
-      { label: '4', left: 3 * 80 },
-      { label: '5', left: 4 * 80 },
-      { label: '6', left: 5 * 80 },
-      { label: '7', left: 6 * 80 },
-      { label: '8', left: 7 * 80 },
+      { label: 1, left: 0 * 80 },
+      { label: 2, left: 1 * 80 },
+      { label: 3, left: 2 * 80 },
+      { label: 4, left: 3 * 80 },
+      { label: 5, left: 4 * 80 },
+      { label: 6, left: 5 * 80 },
+      { label: 7, left: 6 * 80 },
+      { label: 8, left: 7 * 80 },
     ]
   }
 
@@ -109,7 +109,7 @@ class Board extends Component {
           })}
         </div>
         <button
-          onClick={() => movePiece(pieces[2], 'D', '2')}
+          onClick={() => movePiece(pieces[2], 4, 2)}
         >
           Move
         </button>
