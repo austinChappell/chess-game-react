@@ -6,23 +6,31 @@
 
 .Board {
   border: 30px solid #382624;
-  border-radius: 5px; }
+  border-radius: 5px;
+  position: relative; }
 
-.Row {
-  display: flex; }
-
-.Square {
-  width: 75px;
-  height: 75px;
-  border: 1px solid black;
-  color: white;
+.Piece {
+  position: absolute;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 26px; }
+  transition: 500ms;
+  z-index: 10; }
+  .Piece .chess-piece {
+    height: 50px; }
+
+.Square {
+  border: 1px solid black;
+  box-sizing: border-box;
+  color: white;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  transform-origin: center; }
   .Square.dark {
     background-color: #7D574B; }
   .Square.light {
     background-color: #FCD3A4; }
-  .Square .chess-piece {
-    height: 50px; }

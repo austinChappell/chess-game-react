@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Board from './Board';
 
-import data from '../assets/data';
 import pieces from '../assets/constructors/pieces';
 
 const {
@@ -13,35 +12,24 @@ const {
   Rook,
 } = pieces;
 
-const { icons } = data;
-
-const {
-  blackBishop,
-  blackKing,
-  blackKnight,
-  blackPawn,
-  blackQueen,
-  blackRook,
-  whiteBishop,
-  whiteKing,
-  whiteKnight,
-  whitePawn,
-  whiteQueen,
-  whiteRook,
-} = icons;
-
 class App extends Component {
   state = {
-    playerOne: {
-      castled: false,
-      checked: false,
-      color: 'black',
-    },
-    playerTwo: {
-      castled: false,
-      checked: false,
-      color: 'white',
-    },
+    players: [
+      {
+        castled: false,
+        checked: false,
+        color: 'black',
+        isTurn: true,
+        label: 'Player One',
+      },
+      {
+        castled: false,
+        checked: false,
+        color: 'white',
+        isTurn: false,
+        label: 'Player Two',
+      },
+    ],
     pieces: [
       new Pawn('black', 'G', '1'),
       new Pawn('black', 'G', '2'),
@@ -77,6 +65,41 @@ class App extends Component {
       new Rook('white', 'A', '8'),
     ],
   }
+
+  movePiece = (piece, row, column) => {
+    const pieces = this.state.pieces.slice();
+    const newPiece = {
+      ...piece,
+      column,
+      hasMoved: true,
+      row,
+      selected: false,
+    };
+    const index = pieces.indexOf(piece);
+    pieces[index] = newPiece;
+    this.setState({ pieces });
+  }
+
+  selectPiece = (piece) => {
+    const activeColor = this.state.players.find(p => p.isTurn).color;
+    if (piece.color === activeColor) {
+      const pieces = this.state.pieces.slice();
+      const prevSelection = pieces.find(p => p.selected);
+      if (prevSelection) {
+        const index = pieces.indexOf(prevSelection);
+        const deselected = {
+          ...prevSelection,
+          selected: false,
+        };
+        pieces[index] = deselected;
+      }
+      const newPiece = { ...piece, selected: !piece.selected };
+      const index = pieces.indexOf(piece);
+      pieces[index] = newPiece;
+      this.setState({ pieces });
+    }
+  }
+
   render() {
     const {
       pieces,
@@ -85,7 +108,10 @@ class App extends Component {
     return (
       <div className="App">
         <Board
+          movePiece={this.movePiece}
           pieces={pieces}
+          selectPiece={this.selectPiece}
+          squareWidth={80}
         />
       </div>
     );

@@ -5,6 +5,8 @@ class ChessPiece {
     this.column = column;
     this.alive = true;
     this.hasMoved = false;
+    this.placed = false;
+    this.selected = false;
   }
 }
 

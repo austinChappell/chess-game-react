@@ -6,30 +6,23 @@ class Square extends Component {
   render() {
     const {
       dark,
-      piece,
+      left,
+      top,
+      width,
     } = this.props;
 
-    const chessPiece = piece ? (
-      <img
-        className="chess-piece"
-        src={piece.icon}
-        alt={piece.label}
-      />
-    ) : null;
-
-    console.log('CHESS PIECE', piece)
     const className = `Square ${dark ? 'dark' : 'light'}`;
-    const color = piece ? piece.color : '';
 
     return (
       <div
         className={className}
         style={{
-          color,
+          left,
+          top,
+          height: width,
+          width,
         }}
-      >
-        {chessPiece}
-      </div>
+      />
     )
   }
 }
