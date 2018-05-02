@@ -12,6 +12,45 @@ const {
   Rook,
 } = pieces;
 
+const boardRows = [
+  { label: 1, top: 0 * 80 },
+  { label: 2, top: 1 * 80 },
+  { label: 3, top: 2 * 80 },
+  { label: 4, top: 3 * 80 },
+  { label: 5, top: 4 * 80 },
+  { label: 6, top: 5 * 80 },
+  { label: 7, top: 6 * 80 },
+  { label: 8, top: 7 * 80 },
+];
+
+const boardColumns = [
+  { label: 1, left: 0 * 80 },
+  { label: 2, left: 1 * 80 },
+  { label: 3, left: 2 * 80 },
+  { label: 4, left: 3 * 80 },
+  { label: 5, left: 4 * 80 },
+  { label: 6, left: 5 * 80 },
+  { label: 7, left: 6 * 80 },
+  { label: 8, left: 7 * 80 },
+];
+
+const generateSquares = () => {
+  const rows = boardColumns.map((col, index) => {
+    return boardRows.map((row, rIndex) => {
+      return {
+        row: row.label,
+        column: col.label,
+        top: row.top,
+        left: col.left,
+      }
+    })
+  })
+
+  const squares = [];
+  rows.forEach(row => squares.push(...row));
+  return squares;
+}
+
 class App extends Component {
   state = {
     players: [
@@ -64,6 +103,7 @@ class App extends Component {
       new Knight('white', 1, 7),
       new Rook('white', 1, 8),
     ],
+    squares: generateSquares(),
   }
 
   movePiece = (piece, row, column) => {
@@ -81,7 +121,12 @@ class App extends Component {
   }
 
   selectPiece = (piece) => {
-    const activeColor = this.state.players.find(p => p.isTurn).color;
+    const {
+      players,
+      squares,
+    } = this.state;
+    piece.generateCurrentOptions(squares, piece.row, piece.column);
+    const activeColor = players.find(p => p.isTurn).color;
     if (piece.color === activeColor) {
       const pieces = this.state.pieces.slice();
       const prevSelection = pieces.find(p => p.selected);
@@ -103,6 +148,7 @@ class App extends Component {
   render() {
     const {
       pieces,
+      squares,
     } = this.state;
 
     return (
@@ -111,6 +157,7 @@ class App extends Component {
           movePiece={this.movePiece}
           pieces={pieces}
           selectPiece={this.selectPiece}
+          squares={squares}
           squareWidth={80}
         />
       </div>

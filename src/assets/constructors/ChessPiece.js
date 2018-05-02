@@ -13,6 +13,7 @@ class ChessPiece {
     this.maxX = 8;
     this.minX = 8;
     this.allowedSqaures = [];
+    this.currentMoves = [];
   }
 }
 

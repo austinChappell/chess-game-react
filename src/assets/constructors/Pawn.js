@@ -16,10 +16,46 @@ class Pawn extends ChessPiece {
     this.type = 'pawn';
     this.icon = color === 'black' ? blackPawn : whitePawn;
     this.orientation = orientation;
-    this.maxY = this.hasMoved ? orientation * 2 : orientation;
-    this.minY = orientation;
-    this.maxX = this.attacking ? 1 : 0;
-    this.minX = this.attacking ? -1 : 0;
+    this.maxY = orientation > 0 ? orientation : 0;
+    this.minY = orientation < 0 ? orientation : 0;
+    this.maxX = 1;
+    this.minX = -1;
+    this.allowedMoves = [
+      {col: 0, row: 1 },
+      {col: 1, row: 1 },
+      {col: -1, row: 1 },
+      {col: 0, row: -1 },
+      {col: 1, row: -1 },
+      {col: -1, row: -1 },
+      {col: 0, row: 2 },
+      {col: 0, row: -2 },
+    ];
+    this.generateCurrentOptions = (squares, row, col) => {
+      const { hasMoved, orientation } = this;
+      const maxRow = row + this.maxY;
+      const minRow = row + this.minY;
+      const maxCol = col + this.maxX;
+      const minCol = col + this.minX;
+
+      if (hasMoved) {
+        this.maxY = orientation > 0 ? orientation : 0;
+        this.minY = orientation < 0 ? orientation : 0;            
+      } else {
+        this.maxY = orientation > 0 ? orientation * 2 : 0;
+        this.minY = orientation < 0 ? orientation * 2 : 0;            
+      }
+
+      this.currentMoves = squares.filter((square, index) => {
+        const lessThanMaxRow = square.row <= maxRow;
+        const moreThanMinRow = square.row >= minRow;
+        const lessThanMaxCol = square.column <= maxCol;
+        const moreThanMinCol = square.column >= minCol;
+        const inRowRange = lessThanMaxRow && moreThanMinRow;
+        const inColRange = lessThanMaxCol && moreThanMinCol;
+
+        return inRowRange && inColRange;
+      });
+    }
   }
 }
 

@@ -1,60 +1,32 @@
 import React, { Component, Fragment } from 'react';
 
+import Helpers from '../assets/helpers';
+
 import Piece from './Piece';
 import Square from './Square';
 
+const helpers = new Helpers();
+
+const {
+  findPieceBySquare,
+  findSquareByPiece,
+} = helpers;
+
 class Board extends Component {
-  state = {
-    boardRows: [
-      { label: 1, top: 0 * 80 },
-      { label: 2, top: 1 * 80 },
-      { label: 3, top: 2 * 80 },
-      { label: 4, top: 3 * 80 },
-      { label: 5, top: 4 * 80 },
-      { label: 6, top: 5 * 80 },
-      { label: 7, top: 6 * 80 },
-      { label: 8, top: 7 * 80 },
-    ],
-    boardColumns: [
-      { label: 1, left: 0 * 80 },
-      { label: 2, left: 1 * 80 },
-      { label: 3, left: 2 * 80 },
-      { label: 4, left: 3 * 80 },
-      { label: 5, left: 4 * 80 },
-      { label: 6, left: 5 * 80 },
-      { label: 7, left: 6 * 80 },
-      { label: 8, left: 7 * 80 },
-    ]
-  }
+  state = {}
 
-  render() {
-    const {
-      boardColumns,
-      boardRows,
-    } = this.state;
-
+  render() {    
     const {
       movePiece,
       pieces,
       selectPiece,
+      squares,
       squareWidth,
     } = this.props;
 
+    console.log('PIECES', pieces);
+
     const boardWidth = squareWidth * 8;
-
-    const rows = boardColumns.map((col, index) => {
-      return boardRows.map((row, rIndex) => {
-        return {
-          row: row.label,
-          column: col.label,
-          top: row.top,
-          left: col.left,
-        }
-      })
-    })
-
-    const squares = [];
-    rows.forEach(row => squares.push(...row));
 
     return (
       <Fragment>
@@ -72,9 +44,7 @@ class Board extends Component {
             } = piece;
 
             // find the square that the piece is on
-            const foundSquare = squares.find(sq => {
-              return sq.row === row && sq.column === column;
-            });
+            const foundSquare = findSquareByPiece(pieces, squares, piece);
 
             return (
               <Piece
@@ -90,9 +60,15 @@ class Board extends Component {
           })}
           {squares.map((square, index) => {
             const {
+              column,
               top,
               left,
+              row,
             } = square;
+
+            // mark a square as occupied
+            const foundPiece = findPieceBySquare(squares, pieces, square);
+            square.occupied = foundPiece !== null;
 
             const evenRow = top % (squareWidth * 2) === 0;
             const evenColumn = left % (squareWidth * 2) === 0;
