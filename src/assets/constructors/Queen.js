@@ -24,7 +24,7 @@ class Queen extends ChessPiece {
       const straightOptions = findCurrentRookMoves(queen, squares, pieceRow, pieceCol);
       const diagOptions = findCurrentBishopMoves(queen, squares, pieceRow, pieceCol);
       const allOptions = [...straightOptions, ...diagOptions];
-      queen.currentMoves = allOptions;
+      return allOptions;
     };
   }
 }

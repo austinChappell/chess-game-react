@@ -20,7 +20,7 @@ class Knight extends ChessPiece {
     this.type = 'knight';
     this.icon = color === 'black' ? blackKnight : whiteKnight;
     this.generateCurrentOptions = (knight, squares, pieceRow, pieceCol) => {
-      knight.currentMoves = findCurrentKnightMoves(knight, squares, pieceRow, pieceCol);
+      return findCurrentKnightMoves(knight, squares, pieceRow, pieceCol);
     };
   }
 }

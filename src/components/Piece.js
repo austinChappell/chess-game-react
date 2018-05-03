@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 class Piece extends Component {
   handleClick = () => {
-    console.log('PIECE CLICKED')
     const {
       foundSquare,
       movePiece,

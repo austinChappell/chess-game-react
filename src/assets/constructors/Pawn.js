@@ -52,7 +52,7 @@ class Pawn extends ChessPiece {
       const maxCol = pieceCol + pawn.maxX;
       const minCol = pieceCol + pawn.minX;
 
-      pawn.currentMoves = findCurrentPawnMoves(pawn, squares, maxRow, minRow, maxCol, minCol);
+      return findCurrentPawnMoves(pawn, squares, maxRow, minRow, maxCol, minCol);
     };
   }
 }

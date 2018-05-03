@@ -20,7 +20,7 @@ class Bishop extends ChessPiece {
     this.type = 'bishop';
     this.icon = color === 'black' ? blackBishop : whiteBishop;
     this.generateCurrentOptions = (bishop, squares, pieceRow, pieceCol) => {
-      bishop.currentMoves = findCurrentBishopMoves(bishop, squares, pieceRow, pieceCol);
+      return findCurrentBishopMoves(bishop, squares, pieceRow, pieceCol);
     };
   }
 }

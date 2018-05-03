@@ -14,6 +14,7 @@ class ChessPiece {
     this.minX = 8;
     this.allowedSqaures = [];
     this.currentMoves = [];
+    this.isKing = false;
   }
 }
 

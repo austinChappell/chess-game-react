@@ -20,7 +20,7 @@ class Rook extends ChessPiece {
     this.type = 'rook';
     this.icon = color === 'black' ? blackRook : whiteRook;
     this.generateCurrentOptions = (rook, squares, pieceRow, pieceCol) => {
-      rook.currentMoves = findCurrentRookMoves(rook, squares, pieceRow, pieceCol);
+      return findCurrentRookMoves(rook, squares, pieceRow, pieceCol);
     };
   }
 }

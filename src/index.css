@@ -1,8 +1,15 @@
 .App {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh; }
+  .App .warning {
+    height: 30px; }
+    .App .warning > * {
+      color: red;
+      font-size: 20px;
+      margin: 0; }
 
 .Board {
   border: 30px solid #382624;
@@ -21,7 +28,6 @@
     height: 50px; }
 
 .Square {
-  border: 1px solid black;
   box-sizing: border-box;
   color: white;
   position: absolute;

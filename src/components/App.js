@@ -109,6 +109,11 @@ class App extends Component {
       new Rook('white', 1, 8),
     ],
     squares: generateSquares(),
+    warning: null,
+  }
+
+  clearWarning = () => {
+    this.setState({ warning: null });
   }
 
   clearSquares = () => {
@@ -127,15 +132,40 @@ class App extends Component {
     this.setState({ pieces });
   }
 
+  listenForCheck = (color) => {
+    const {
+      pieces,
+      squares,
+    } = this.state;
+    // get all living pieces of opposite color
+    const livingPieces = pieces.filter(p => p.alive && p.color !== color);
+    const king = pieces.find(p => p.isKing && p.color === color);
+
+    // all options for living pieces
+    const allMoves = [];
+    livingPieces.forEach((piece) => {
+      const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column);
+      allMoves.push(...moves);
+    });
+    const kingPiece = allMoves.find(square => square.row === king.row && square.column === king.column);
+    return kingPiece !== undefined;
+  }
+
   movePiece = (row, column) => {
+    const activePlayer = this.state.players.find(p => p.isTurn);
     const { squares } = this.state;
-    const pieces = this.state.pieces.slice();
+    const { pieces } = this.state;
     const square = getSquare(squares, row, column);
+
+    // get piece where you are going
     const destinationResident = findPieceBySquare(squares, pieces, square);
     if (destinationResident) {
       this.kill(destinationResident);
     }
+
     const piece = pieces.find(p => p.selected);
+
+    // create new piece to replace old one
     const newPiece = {
       ...piece,
       column,
@@ -145,10 +175,37 @@ class App extends Component {
     };
     const index = pieces.indexOf(piece);
     pieces[index] = newPiece;
+    
     this.setState({ pieces }, () => {
+      console.log('DESTINATION PIECE', destinationResident);
+      const putSelfInCheck = this.listenForCheck(activePlayer.color);
+      if (putSelfInCheck) {
+        // logic to unde move and notify user
+        if (destinationResident) {
+          this.revive(destinationResident, row, column);
+        }
+        this.moveBack(piece, index);
+        this.warn('This will put yourself in check');
+      } else {
+        this.switchTurn();
+        this.clearWarning();
+      }
       this.clearSquares();
-      this.switchTurn();
-    });
+    })
+  }
+
+  moveBack = (piece, index) => {
+    const { pieces } = this.state;
+    pieces[index] = piece;
+    this.setState({ pieces });
+  }
+
+  revive = (piece, row, column) => {
+    const { pieces } = this.state;
+    piece.alive = true;
+    piece.row = row;
+    piece.row = column;
+    this.setState({ pieces });
   }
 
   selectPiece = (piece) => {
@@ -156,7 +213,8 @@ class App extends Component {
       players,
       squares,
     } = this.state;
-    piece.generateCurrentOptions(piece, squares, piece.row, piece.column);
+    const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column);
+    piece.currentMoves = moves;
     const activeColor = players.find(p => p.isTurn).color;
     if (piece.color === activeColor) {
       const pieces = this.state.pieces.slice();
@@ -209,14 +267,29 @@ class App extends Component {
     this.setState({ players });
   }
 
+  warn = (warning) => {
+    this.setState({ warning }, () => {
+      setTimeout(() => {
+        this.clearWarning();
+      }, 2000);
+    });
+  }
+
   render() {
     const {
       pieces,
       squares,
     } = this.state;
 
+    const warning = this.state.warning ?
+      <h1>{this.state.warning}</h1>
+      : null;
+
     return (
       <div className="App">
+        <div className="warning">
+          {warning}
+        </div>
         <Board
           kill={this.kill}
           movePiece={this.movePiece}
