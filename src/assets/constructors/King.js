@@ -1,5 +1,12 @@
 import ChessPiece from './ChessPiece';
 import data from '../data';
+import Helpers from '../helpers';
+
+const helpers = new Helpers();
+
+const {
+  findCurrentKingMoves,
+} = helpers;
 
 const {
   blackKing,
@@ -12,6 +19,9 @@ class King extends ChessPiece {
     this.label = 'King';
     this.type = 'king';
     this.icon = color === 'black' ? blackKing : whiteKing;
+    this.generateCurrentOptions = (king, squares, pieceRow, pieceCol) => {
+      king.currentMoves = findCurrentKingMoves(king, squares, pieceRow, pieceCol);
+    };
   }
 }
 

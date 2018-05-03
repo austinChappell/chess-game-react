@@ -79,6 +79,22 @@ class Helpers {
     });
   }
 
+  findCurrentKingMoves = (king, squares, pieceRow, pieceCol) => {
+    return squares.filter((square) => {
+      const occupiedBySelf = square.piece && square.piece.color === king.color;
+      const {
+        column: squareCol,
+        row: squareRow,
+      } = square;
+
+      const rowDiff = Math.abs(squareRow - pieceRow);
+      const colDiff = Math.abs(squareCol - pieceCol);
+      const isOneStep = rowDiff <= 1 && colDiff <= 1;
+      
+      return isOneStep && !occupiedBySelf;
+    });
+  }
+
   findCurrentPawnMoves = (pawn, squares, maxRow, minRow, maxCol, minCol) => {
     const {
       hasMoved,
