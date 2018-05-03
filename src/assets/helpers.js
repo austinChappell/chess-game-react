@@ -1,24 +1,20 @@
 class Helpers {
-  findPieceBySquare(squares, pieces, square) {
-    const piece = pieces.find(p => {
-      return p.row === square.row && p.column === square.column;
-    });
-    return piece ? piece : null;
+  findPieceBySquare = (squares, pieces, square) => {
+    const piece = pieces.find(p => p.row === square.row && p.column === square.column);
+    return piece || null;
   }
 
-  findSquareByPiece(pieces, squares, piece) {
-    const square = squares.find(sq => {
-      return sq.row === piece.row && sq.column === piece.column;
-    })
-    return square ? square : null;
+  findSquareByPiece = (pieces, squares, piece) => {
+    const square = squares.find(sq => sq.row === piece.row && sq.column === piece.column);
+    return square || null;
   }
 
-  findCurrentPawnMoves(pawn, squares, maxRow, minRow, maxCol, minCol) {
+  findCurrentPawnMoves = (pawn, squares, maxRow, minRow, maxCol, minCol) => {
     const {
       hasMoved,
       orientation,
     } = pawn;
-    return squares.filter((square, index) => {
+    return squares.filter((square) => {
       const occupied = square.piece !== null;
       const occupiedByOpp = square.piece && square.piece.color !== pawn.color;
 
@@ -29,7 +25,7 @@ class Helpers {
       // determine front-to-back limits
       const lessThanMaxRow = square.row <= maxRow;
       const moreThanMinRow = square.row >= minRow;
-      
+
       // determine side-to-side limits
       const lessThanMaxCol = square.column <= realMaxCol;
       const moreThanMinCol = square.column >= realMinCol;
@@ -53,7 +49,7 @@ class Helpers {
               row,
             } = pawn;
             return sq.row === row + orientation && sq.column === column;
-          })
+          });
           const blocked = squareInFront.piece !== null;
           return !isLateral && !hasMoved && !occupied && !blocked;
         } else if (!sameRow && inRange) {
@@ -62,6 +58,8 @@ class Helpers {
       }
     });
   }
+
+  getSquare = (squares, row, col) => squares.find(sq => sq.row === row && sq.column === col)
 }
 
 export default Helpers;

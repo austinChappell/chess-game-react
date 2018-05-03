@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Board from './Board';
 
-import pieces from '../assets/constructors/pieces';
+import pieceConstructors from '../assets/constructors/pieces';
 import Helpers from '../assets/helpers';
 
 const helpers = new Helpers();
 
 const {
   findPieceBySquare,
+  getSquare,
 } = helpers;
 
 const {
@@ -17,7 +18,7 @@ const {
   Pawn,
   Queen,
   Rook,
-} = pieces;
+} = pieceConstructors;
 
 const boardRows = [
   { label: 1, top: 0 * 80 },
@@ -42,22 +43,18 @@ const boardColumns = [
 ];
 
 const generateSquares = () => {
-  const rows = boardColumns.map((col, index) => {
-    return boardRows.map((row, rIndex) => {
-      return {
-        row: row.label,
-        column: col.label,
-        top: row.top,
-        left: col.left,
-        available: false,
-      }
-    })
-  })
+  const rows = boardColumns.map(col => boardRows.map(row => ({
+    row: row.label,
+    column: col.label,
+    top: row.top,
+    left: col.left,
+    available: false,
+  })));
 
   const squares = [];
   rows.forEach(row => squares.push(...row));
   return squares;
-}
+};
 
 class App extends Component {
   state = {
@@ -118,7 +115,7 @@ class App extends Component {
     const { squares } = this.state;
     squares.filter(sq => sq.available).forEach((sq) => {
       sq.available = false;
-    })
+    });
     this.setState({ squares });
   }
 
@@ -131,9 +128,7 @@ class App extends Component {
   movePiece = (row, column) => {
     const { squares } = this.state;
     const pieces = this.state.pieces.slice();
-    const square = squares.find((sq) => {
-      return sq.row === row && sq.column === column;
-    });
+    const square = getSquare(squares, row, column);
     const destinationResident = findPieceBySquare(squares, pieces, square);
     if (destinationResident) {
       this.kill(destinationResident);
@@ -150,6 +145,7 @@ class App extends Component {
     pieces[index] = newPiece;
     this.setState({ pieces }, () => {
       this.clearSquares();
+      this.switchTurn();
     });
   }
 
@@ -192,13 +188,23 @@ class App extends Component {
     });
     if (currentMoves) {
       currentMoves.forEach((move) => {
-        const square = squares.find((sq) => {
-          return sq.row === move.row && sq.column === move.column;
-        })
+        const square = getSquare(squares, move.row, move.column);
         square.available = true;
-      })
+      });
     }
     this.setState({ squares });
+  }
+
+  switchTurn = () => {
+    const { players } = this.state;
+    players.forEach((p) => {
+      if (p.isTurn) {
+        p.isTurn = false;
+      } else {
+        p.isTurn = true;
+      }
+    });
+    this.setState({ players });
   }
 
   render() {
