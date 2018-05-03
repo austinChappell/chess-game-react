@@ -1,5 +1,12 @@
 import ChessPiece from './ChessPiece';
 import data from '../data';
+import Helpers from '../helpers';
+
+const helpers = new Helpers();
+
+const {
+  findCurrentRookMoves,
+} = helpers;
 
 const {
   blackRook,
@@ -12,6 +19,9 @@ class Rook extends ChessPiece {
     this.label = 'Rook';
     this.type = 'rook';
     this.icon = color === 'black' ? blackRook : whiteRook;
+    this.generateCurrentOptions = (rook, squares, pieceRow, pieceCol) => {
+      rook.currentMoves = findCurrentRookMoves(rook, squares, pieceRow, pieceCol);
+    };
   }
 }
 

@@ -28,17 +28,16 @@ class Pawn extends ChessPiece {
     this.maxX = 1;
     this.minX = -1;
     this.allowedMoves = [
-      {col: 0, row: 1 },
-      {col: 1, row: 1 },
-      {col: -1, row: 1 },
-      {col: 0, row: -1 },
-      {col: 1, row: -1 },
-      {col: -1, row: -1 },
-      {col: 0, row: 2 },
-      {col: 0, row: -2 },
+      { col: 0, row: 1 },
+      { col: 1, row: 1 },
+      { col: -1, row: 1 },
+      { col: 0, row: -1 },
+      { col: 1, row: -1 },
+      { col: -1, row: -1 },
+      { col: 0, row: 2 },
+      { col: 0, row: -2 },
     ];
-    this.generateCurrentOptions = (pawn, squares, row, col) => {
-      pawn.currentMoves = [];
+    this.generateCurrentOptions = (pawn, squares, pieceRow, pieceCol) => {
       const { hasMoved, orientation } = pawn;
       
       if (hasMoved) {
@@ -48,13 +47,13 @@ class Pawn extends ChessPiece {
         pawn.maxY = orientation > 0 ? 2 : 0;
       }
       
-      const maxRow = row + pawn.maxY;
-      const minRow = row + pawn.minY;
-      const maxCol = col + pawn.maxX;
-      const minCol = col + pawn.minX;
+      const maxRow = pieceRow + pawn.maxY;
+      const minRow = pieceRow + pawn.minY;
+      const maxCol = pieceCol + pawn.maxX;
+      const minCol = pieceCol + pawn.minX;
 
-      pawn.currentMoves = findCurrentPawnMoves(pawn, squares, maxRow, minRow, maxCol, minCol)
-    }
+      pawn.currentMoves = findCurrentPawnMoves(pawn, squares, maxRow, minRow, maxCol, minCol);
+    };
   }
 }
 
