@@ -9,6 +9,76 @@ class Helpers {
     return square || null;
   }
 
+  findCurrentBishopMoves = (rook, squares, pieceRow, pieceCol) => {
+    let maxQ1 = 8;
+    let maxQ2 = 8;
+    let maxQ3 = 8;
+    let maxQ4 = 8;
+
+    const options = squares.filter((square) => {
+      const occupied = square.piece !== null;
+      const {
+        column: squareCol,
+        row: squareRow,
+      } = square;
+
+      const rowDiff = squareRow - pieceRow;
+      const colDiff = squareCol - pieceCol;
+      const isDiag = Math.abs(rowDiff) === Math.abs(colDiff);
+      const self = squareRow === pieceRow && squareCol === pieceCol;
+      const isQuadrant1 = rowDiff > 0 && colDiff > 0;
+      const isQuadrant2 = rowDiff < 0 && colDiff > 0;
+      const isQuadrant3 = rowDiff < 0 && colDiff < 0;
+      const isQuadrant4 = rowDiff > 0 && colDiff < 0;
+      const numOfSteps = Math.abs(rowDiff);
+
+      if (isDiag && occupied) {
+        if (isQuadrant1 && numOfSteps < maxQ1) {
+          maxQ1 = numOfSteps;
+        } else if (isQuadrant2 && numOfSteps < maxQ2) {
+          maxQ2 = numOfSteps;
+        } else if (isQuadrant3 && numOfSteps < maxQ3) {
+          maxQ3 = numOfSteps;
+        } else if (isQuadrant4 && numOfSteps < maxQ4) {
+          maxQ4 = numOfSteps;
+        }
+      }
+
+      return isDiag && !self;
+    });
+
+    return options.filter((square) => {
+      const occupiedBySelf = square.piece && square.piece.color === rook.color;
+
+      const {
+        column: squareCol,
+        row: squareRow,
+      } = square;
+
+      const rowDiff = squareRow - pieceRow;
+      const colDiff = squareCol - pieceCol;
+      const isQuadrant1 = rowDiff > 0 && colDiff > 0;
+      const isQuadrant2 = rowDiff < 0 && colDiff > 0;
+      const isQuadrant3 = rowDiff < 0 && colDiff < 0;
+      const isQuadrant4 = rowDiff > 0 && colDiff < 0;
+      const numOfSteps = Math.abs(rowDiff);
+      let isValid = false;
+
+      // block off bishop if piece is in the way
+      if (isQuadrant1) {
+        isValid = numOfSteps <= maxQ1 && !occupiedBySelf;
+      } else if (isQuadrant2) {
+        isValid = numOfSteps <= maxQ2 && !occupiedBySelf;
+      } else if (isQuadrant3) {
+        isValid = numOfSteps <= maxQ3 && !occupiedBySelf;
+      } else if (isQuadrant4) {
+        isValid = numOfSteps <= maxQ4 && !occupiedBySelf;
+      }
+
+      return isValid;
+    });
+  }
+
   findCurrentPawnMoves = (pawn, squares, maxRow, minRow, maxCol, minCol) => {
     const {
       hasMoved,
