@@ -122,6 +122,8 @@ class App extends Component {
   kill = (piece) => {
     const { pieces } = this.state;
     piece.alive = false;
+    piece.row = null;
+    piece.column = null;
     this.setState({ pieces });
   }
 
