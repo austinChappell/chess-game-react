@@ -82,7 +82,7 @@ class App extends Component {
       new Pawn('black', 7, 5, -1),
       new Pawn('black', 7, 6, -1),
       new Pawn('black', 7, 7, -1),
-      new Pawn('black', 5, 8, -1),
+      new Pawn('black', 7, 8, -1),
       new Rook('black', 8, 1),
       new Knight('black', 8, 2),
       new Bishop('black', 8, 3),
