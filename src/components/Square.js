@@ -3,8 +3,21 @@ import React, { Component } from 'react';
 class Square extends Component {
   state = {}
 
+  handleClick = () => {
+    const {
+      available,
+      column,
+      movePiece,
+      row,
+    } = this.props;
+    if (available) {
+      movePiece(row, column)
+    }
+  }
+
   render() {
     const {
+      available,
       dark,
       left,
       top,
@@ -16,7 +29,9 @@ class Square extends Component {
     return (
       <div
         className={className}
+        onClick={this.handleClick}
         style={{
+          border: available ? '3px solid white' : '1px solid black',
           left,
           top,
           height: width,

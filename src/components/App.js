@@ -42,6 +42,7 @@ const generateSquares = () => {
         column: col.label,
         top: row.top,
         left: col.left,
+        available: false,
       }
     })
   })
@@ -74,7 +75,7 @@ class App extends Component {
       new Pawn('black', 7, 2, -1),
       new Pawn('black', 7, 3, -1),
       new Pawn('black', 7, 4, -1),
-      new Pawn('black', 7, 5, -1),
+      new Pawn('black', 5, 5, -1),
       new Pawn('black', 7, 6, -1),
       new Pawn('black', 7, 7, -1),
       new Pawn('black', 7, 8, -1),
@@ -91,7 +92,7 @@ class App extends Component {
       new Pawn('white', 2, 3, 1),
       new Pawn('white', 2, 4, 1),
       new Pawn('white', 2, 5, 1),
-      new Pawn('white', 2, 6, 1),
+      new Pawn('white', 6, 6, 1),
       new Pawn('white', 2, 7, 1),
       new Pawn('white', 2, 8, 1),
       new Rook('white', 1, 1),
@@ -106,8 +107,17 @@ class App extends Component {
     squares: generateSquares(),
   }
 
-  movePiece = (piece, row, column) => {
+  clearSquares = () => {
+    const { squares } = this.state;
+    squares.filter(sq => sq.available).forEach((sq) => {
+      sq.available = false;
+    })
+    this.setState({ squares });
+  }
+
+  movePiece = (row, column) => {
     const pieces = this.state.pieces.slice();
+    const piece = pieces.find(p => p.selected);
     const newPiece = {
       ...piece,
       column,
@@ -115,9 +125,12 @@ class App extends Component {
       row,
       selected: false,
     };
+    console.log('NEW PIECE', newPiece)
     const index = pieces.indexOf(piece);
     pieces[index] = newPiece;
-    this.setState({ pieces });
+    this.setState({ pieces }, () => {
+      this.clearSquares();
+    });
   }
 
   selectPiece = (piece) => {
@@ -141,8 +154,31 @@ class App extends Component {
       const newPiece = { ...piece, selected: !piece.selected };
       const index = pieces.indexOf(piece);
       pieces[index] = newPiece;
-      this.setState({ pieces });
+      this.setState({ pieces }, () => {
+        this.setCurrentChoices();
+      });
     }
+  }
+
+  setCurrentChoices = () => {
+    const {
+      pieces,
+      squares,
+    } = this.state;
+    const selectedPiece = pieces.find(p => p.selected);
+    const currentMoves = selectedPiece ? selectedPiece.currentMoves : null;
+    squares.forEach((sq) => {
+      sq.available = false;
+    });
+    if (currentMoves) {
+      currentMoves.forEach((move) => {
+        const square = squares.find((sq) => {
+          return sq.row === move.row && sq.column === move.column;
+        })
+        square.available = true;
+      })
+    }
+    this.setState({ squares });
   }
 
   render() {

@@ -26,8 +26,6 @@ class Board extends Component {
 
     const boardWidth = squareWidth * 8;
 
-    console.log('PIECES', pieces);
-
     return (
       <Fragment>
         <div
@@ -55,8 +53,11 @@ class Board extends Component {
           })}
           {squares.map((square, index) => {
             const {
+              available,
+              column,
               top,
               left,
+              row,
             } = square;
 
             // mark a square as occupied
@@ -69,8 +70,12 @@ class Board extends Component {
             return (
               <Square
                 key={index}
+                available={available}
+                column={column}
                 dark={dark}
                 left={left}
+                movePiece={movePiece}
+                row={row}
                 top={top}
                 width={squareWidth}
               />

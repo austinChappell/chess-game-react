@@ -1,10 +1,17 @@
 import ChessPiece from './ChessPiece';
 import data from '../data';
+import Helpers from '../helpers';
 
 const {
   blackPawn,
   whitePawn,
 } = data.icons;
+
+const helpers = new Helpers();
+
+const {
+  findCurrentPawnMoves,
+} = helpers;
 
 class Pawn extends ChessPiece {
   // orientation to know which way is forward
@@ -31,33 +38,23 @@ class Pawn extends ChessPiece {
       {col: 0, row: -2 },
     ];
     this.generateCurrentOptions = (squares, row, col) => {
+      console.log('PAWN', this);
+      this.currentMoves = [];
       const { hasMoved, orientation } = this;
+      
+      if (hasMoved) {
+        this.maxY = orientation > 0 ? 1 : 0;
+        this.minY = orientation > 0 ? 0 : -1;
+      } else {
+        this.maxY = orientation > 0 ? 2 : 0;
+      }
+      
       const maxRow = row + this.maxY;
       const minRow = row + this.minY;
       const maxCol = col + this.maxX;
       const minCol = col + this.minX;
 
-      if (hasMoved) {
-        this.maxY = orientation > 0 ? orientation : 0;
-        this.minY = orientation < 0 ? 0 : orientation;
-      } else {
-        this.maxY = orientation > 0 ? orientation * 2 : 0;
-        this.minY = orientation < 0 ? 0 : orientation * 2;            
-      }
-
-      this.currentMoves = squares.filter((square, index) => {
-        const occupiedByOpp = square.piece && square.piece.color !== this.color;
-        const realMaxCol = occupiedByOpp ? maxCol : maxCol - 1;
-        const realMinCol = occupiedByOpp ? minCol : minCol + 1;
-        const lessThanMaxRow = square.row <= maxRow;
-        const moreThanMinRow = square.row >= minRow;
-        const lessThanMaxCol = square.column <= realMaxCol;
-        const moreThanMinCol = square.column >= realMinCol;
-        const inRowRange = lessThanMaxRow && moreThanMinRow;
-        const inColRange = lessThanMaxCol && moreThanMinCol;
-
-        return inRowRange && inColRange;
-      });
+      this.currentMoves = findCurrentPawnMoves(this, squares, maxRow, minRow, maxCol, minCol)
     }
   }
 }
