@@ -17,6 +17,7 @@ class Board extends Component {
 
   render() {    
     const {
+      kill,
       movePiece,
       pieces,
       selectPiece,
@@ -39,17 +40,22 @@ class Board extends Component {
             // find the square that the piece is on
             const foundSquare = findSquareByPiece(pieces, squares, piece);
 
-            return (
-              <Piece
-                key={index}
-                top={foundSquare.top}
-                left={foundSquare.left}
-                piece={piece}
-                selected={piece.selected}
-                selectPiece={selectPiece}
-                width={squareWidth}
-              />
-            )
+            if (piece.alive) {
+              return (
+                <Piece
+                  key={index}
+                  foundSquare={foundSquare}
+                  kill={kill}
+                  top={foundSquare.top}
+                  left={foundSquare.left}
+                  movePiece={movePiece}
+                  piece={piece}
+                  selected={piece.selected}
+                  selectPiece={selectPiece}
+                  width={squareWidth}
+                />
+              )
+            }
           })}
           {squares.map((square, index) => {
             const {
@@ -82,11 +88,6 @@ class Board extends Component {
             )
           })}
         </div>
-        <button
-          onClick={() => movePiece(pieces[2], 4, 2)}
-        >
-          Move
-        </button>
       </Fragment>
     )
   }

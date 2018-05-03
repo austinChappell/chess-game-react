@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import Board from './Board';
 
 import pieces from '../assets/constructors/pieces';
+import Helpers from '../assets/helpers';
+
+const helpers = new Helpers();
+
+const {
+  findPieceBySquare,
+} = helpers;
 
 const {
   Bishop,
@@ -115,8 +122,22 @@ class App extends Component {
     this.setState({ squares });
   }
 
+  kill = (piece) => {
+    const { pieces } = this.state;
+    piece.alive = false;
+    this.setState({ pieces });
+  }
+
   movePiece = (row, column) => {
+    const { squares } = this.state;
     const pieces = this.state.pieces.slice();
+    const square = squares.find((sq) => {
+      return sq.row === row && sq.column === column;
+    });
+    const destinationResident = findPieceBySquare(squares, pieces, square);
+    if (destinationResident) {
+      this.kill(destinationResident);
+    }
     const piece = pieces.find(p => p.selected);
     const newPiece = {
       ...piece,
@@ -125,7 +146,6 @@ class App extends Component {
       row,
       selected: false,
     };
-    console.log('NEW PIECE', newPiece)
     const index = pieces.indexOf(piece);
     pieces[index] = newPiece;
     this.setState({ pieces }, () => {
@@ -138,7 +158,7 @@ class App extends Component {
       players,
       squares,
     } = this.state;
-    piece.generateCurrentOptions(squares, piece.row, piece.column);
+    piece.generateCurrentOptions(piece, squares, piece.row, piece.column);
     const activeColor = players.find(p => p.isTurn).color;
     if (piece.color === activeColor) {
       const pieces = this.state.pieces.slice();
@@ -190,6 +210,7 @@ class App extends Component {
     return (
       <div className="App">
         <Board
+          kill={this.kill}
           movePiece={this.movePiece}
           pieces={pieces}
           selectPiece={this.selectPiece}

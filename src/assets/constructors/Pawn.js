@@ -37,24 +37,23 @@ class Pawn extends ChessPiece {
       {col: 0, row: 2 },
       {col: 0, row: -2 },
     ];
-    this.generateCurrentOptions = (squares, row, col) => {
-      console.log('PAWN', this);
-      this.currentMoves = [];
-      const { hasMoved, orientation } = this;
+    this.generateCurrentOptions = (pawn, squares, row, col) => {
+      pawn.currentMoves = [];
+      const { hasMoved, orientation } = pawn;
       
       if (hasMoved) {
-        this.maxY = orientation > 0 ? 1 : 0;
-        this.minY = orientation > 0 ? 0 : -1;
+        pawn.maxY = orientation > 0 ? 1 : 0;
+        pawn.minY = orientation > 0 ? 0 : -1;
       } else {
-        this.maxY = orientation > 0 ? 2 : 0;
+        pawn.maxY = orientation > 0 ? 2 : 0;
       }
       
-      const maxRow = row + this.maxY;
-      const minRow = row + this.minY;
-      const maxCol = col + this.maxX;
-      const minCol = col + this.minX;
+      const maxRow = row + pawn.maxY;
+      const minRow = row + pawn.minY;
+      const maxCol = col + pawn.maxX;
+      const minCol = col + pawn.minX;
 
-      this.currentMoves = findCurrentPawnMoves(this, squares, maxRow, minRow, maxCol, minCol)
+      pawn.currentMoves = findCurrentPawnMoves(pawn, squares, maxRow, minRow, maxCol, minCol)
     }
   }
 }
