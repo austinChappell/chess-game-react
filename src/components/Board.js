@@ -40,7 +40,7 @@ class Board extends Component {
             // find the square that the piece is on
             const foundSquare = findSquareByPiece(pieces, squares, piece);
 
-            if (piece.alive) {
+            if (piece.alive && foundSquare) {
               return (
                 <Piece
                   key={index}
