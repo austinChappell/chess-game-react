@@ -5,7 +5,6 @@ class Piece extends Component {
     console.log('PIECE CLICKED')
     const {
       foundSquare,
-      kill,
       movePiece,
       piece,
       selectPiece,
@@ -23,7 +22,6 @@ class Piece extends Component {
       left,
       piece,
       selected,
-      selectPiece,
       top,
       width,
     } = this.props;
