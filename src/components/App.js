@@ -145,6 +145,7 @@ class App extends Component {
       return p.alive && p.color !== color && index !== destinationIndex
     });
     const king = pieces.find(p => p.isKing && p.color === color);
+    console.log('KING', king);
 
     // all options for living pieces
     const allMoves = [];
@@ -152,8 +153,31 @@ class App extends Component {
       const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column, pieces);
       allMoves.push(...moves);
     });
+    console.log('ALL MOVES', allMoves);
     const kingPiece = allMoves.find(square => square.row === king.row && square.column === king.column);
+    console.log('KING PIECE', kingPiece);
     return kingPiece !== undefined;
+  }
+
+  listenForCheckmate = () => {
+    const {
+      pieces,
+      players,
+      squares,
+    } = this.state;
+    const activePlayerColor = players.find(p => p.isTurn).color;
+    const activePlayerPieces = pieces.filter(p => p.color === activePlayerColor && p.alive);
+    const escapeOptions = [];
+    activePlayerPieces.forEach((p) => {
+      const moves = p.generateCurrentOptions(p, squares, p.row, p.column, pieces);
+      moves.forEach((move) => {
+        const cannotEscape = this.prepMove(p, move.row, move.column, false);
+        escapeOptions.push(!cannotEscape);
+      });
+    });
+    console.log('OPTIONS', escapeOptions);
+    const canEscape = escapeOptions.some(opt => opt === true);
+    return !canEscape;
   }
 
   movePiece = (row, column) => {
@@ -191,7 +215,7 @@ class App extends Component {
         this.switchTurn(check);
         this.clearWarning();
         this.clearSquares();
-      })
+      });
     }
   }
 
@@ -213,12 +237,12 @@ class App extends Component {
       this.switchTurn(check);
       this.clearWarning();
       this.clearSquares();
-    })
+    });
   }
 
   // followThrough if set to true, will actually attempt the move
   // is set to false, it is just checking the result of the move
-  prepMove = (row, column, followThrough) => {
+  prepMove = (piece, row, column, followThrough) => {
     const activePlayer = this.state.players.find(p => p.isTurn);
     const inactivePlayer = this.state.players.find(p => !p.isTurn);
     const { squares } = this.state;
@@ -229,8 +253,6 @@ class App extends Component {
     // get piece where you are going
     const destinationResident = findPieceBySquare(squares, pieces, square);
     const destinationIndex = pieces.indexOf(destinationResident);
-
-    const piece = pieces.find(p => p.selected);
 
     // create new piece to replace old one
     const newPiece = {
@@ -246,7 +268,7 @@ class App extends Component {
     if (!followThrough) {
       return putSelfInCheck;
     } else if (putSelfInCheck) {
-      this.warn('This will put yourself in check.')
+      this.warn('This will put yourself in check.');
     } else {
       this.completeMove(newPieces, destinationIndex);
     }
@@ -324,7 +346,9 @@ class App extends Component {
       players,
     }, () => {
       if (check) {
-        this.warn('CHECK!')
+        const isCheckmate = this.listenForCheckmate();
+        console.log('IS CHECKMATE', isCheckmate);
+        this.warn('CHECK!');
       }
     });
   }
