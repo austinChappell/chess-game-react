@@ -243,10 +243,10 @@ class App extends Component {
     const index = pieces.indexOf(piece);
     newPieces[index] = newPiece;
     const putSelfInCheck = this.listenForCheck(activePlayer.color, newPieces, destinationIndex);
-    if (putSelfInCheck) {
-      this.warn('This will put yourself in check.')
-    } else if (!followThrough) {
+    if (!followThrough) {
       return putSelfInCheck;
+    } else if (putSelfInCheck) {
+      this.warn('This will put yourself in check.')
     } else {
       this.completeMove(newPieces, destinationIndex);
     }
