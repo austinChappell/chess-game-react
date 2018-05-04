@@ -1,3 +1,9 @@
+* {
+  font-family: sans-serif; }
+
+.hide {
+  display: none; }
+
 .App {
   display: flex;
   flex-direction: column;
@@ -15,6 +21,22 @@
   border: 30px solid #382624;
   border-radius: 5px;
   position: relative; }
+
+.Modal {
+  z-index: 20;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.8);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .Modal .view-box {
+    background-color: white;
+    padding: 20px 40px;
+    border-radius: 5px; }
 
 .Piece {
   position: absolute;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import Board from './Board';
 
 import pieceConstructors from '../assets/constructors/pieces';
@@ -134,13 +135,13 @@ class App extends Component {
     this.setState({ pieces });
   }
 
-  listenForCheck = (color) => {
+  listenForCheck = (color, destinationResident) => {
     const {
       pieces,
       squares,
     } = this.state;
-    // get all living pieces of opposite color
-    const livingPieces = pieces.filter(p => p.alive && p.color !== color);
+    // get all living pieces of opposite color, omitting the one about to be killed
+    const livingPieces = pieces.filter(p => p.alive && p.color !== color && p !== destinationResident);
     const king = pieces.find(p => p.isKing && p.color === color);
 
     // all options for living pieces
@@ -155,6 +156,7 @@ class App extends Component {
 
   movePiece = (row, column) => {
     const activePlayer = this.state.players.find(p => p.isTurn);
+    const inactivePlayer = this.state.players.find(p => !p.isTurn);
     const { squares } = this.state;
     const { pieces } = this.state;
     const square = getSquare(squares, row, column);
@@ -176,8 +178,7 @@ class App extends Component {
     pieces[index] = newPiece;
     
     this.setState({ pieces }, () => {
-      console.log('DESTINATION PIECE', destinationResident);
-      const putSelfInCheck = this.listenForCheck(activePlayer.color);
+      const putSelfInCheck = this.listenForCheck(activePlayer.color, destinationResident);
       if (putSelfInCheck) {
         // logic to unde move and notify user
         this.moveBack(piece, index);
@@ -186,7 +187,8 @@ class App extends Component {
         if (destinationResident) {
           this.kill(destinationResident);
         }
-        this.switchTurn();
+        const check = this.listenForCheck(inactivePlayer.color, null);
+        this.switchTurn(check);
         this.clearWarning();
       }
       this.clearSquares();
@@ -255,7 +257,7 @@ class App extends Component {
     this.setState({ squares });
   }
 
-  switchTurn = () => {
+  switchTurn = (check) => {
     const { players } = this.state;
     players.forEach((p) => {
       if (p.isTurn) {
@@ -264,7 +266,15 @@ class App extends Component {
         p.isTurn = true;
       }
     });
-    this.setState({ players });
+    // update players and see if check
+    this.setState({
+      check,
+      players,
+    }, () => {
+      if (check) {
+        this.warn('CHECK!')
+      }
+    });
   }
 
   warn = (warning) => {

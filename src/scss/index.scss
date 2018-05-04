@@ -1,4 +1,13 @@
+* {
+  font-family: sans-serif;
+}
+
+.hide {
+  display: none;
+}
+
 @import './App';
 @import './Board';
+@import './Modal';
 @import './Piece';
 @import './Square';
