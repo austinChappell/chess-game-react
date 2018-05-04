@@ -11,7 +11,7 @@ class Piece extends Component {
     if (!foundSquare.available) {
       selectPiece(piece);
     } else {
-      movePiece(foundSquare.row, foundSquare.column);
+      movePiece(foundSquare.row, foundSquare.column, true);
       // kill(piece);
     }
   }

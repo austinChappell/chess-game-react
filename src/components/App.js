@@ -183,7 +183,8 @@ class App extends Component {
     const putSelfInCheck = this.listenForCheck(activePlayer.color, newPieces, destinationIndex);
     if (!putSelfInCheck) {
       this.setState({ pieces: newPieces }, () => {
-        if (destinationResident) {
+        // if about to kill a piece
+        if (destinationIndex > -1) {
           this.kill(destinationIndex);
         }
         const check = this.listenForCheck(inactivePlayer.color, newPieces, null);
@@ -199,6 +200,57 @@ class App extends Component {
     piece.selected = false;
     pieces[index] = piece;
     this.setState({ pieces });
+  }
+
+  completeMove = (pieces, destinationIndex) => {
+    const inactivePlayer = this.state.players.find(p => !p.isTurn);
+    this.setState({ pieces }, () => {
+      // if about to kill a piece
+      if (destinationIndex > -1) {
+        this.kill(destinationIndex);
+      }
+      const check = this.listenForCheck(inactivePlayer.color, pieces, null);
+      this.switchTurn(check);
+      this.clearWarning();
+      this.clearSquares();
+    })
+  }
+
+  // followThrough if set to true, will actually attempt the move
+  // is set to false, it is just checking the result of the move
+  prepMove = (row, column, followThrough) => {
+    const activePlayer = this.state.players.find(p => p.isTurn);
+    const inactivePlayer = this.state.players.find(p => !p.isTurn);
+    const { squares } = this.state;
+    const { pieces } = this.state;
+    const square = getSquare(squares, row, column);
+    const newPieces = pieces.map(p => ({ ...p }));
+
+    // get piece where you are going
+    const destinationResident = findPieceBySquare(squares, pieces, square);
+    const destinationIndex = pieces.indexOf(destinationResident);
+
+    const piece = pieces.find(p => p.selected);
+
+    // create new piece to replace old one
+    const newPiece = {
+      ...piece,
+      column,
+      hasMoved: true,
+      row,
+      selected: false,
+    };
+    const index = pieces.indexOf(piece);
+    newPieces[index] = newPiece;
+    const putSelfInCheck = this.listenForCheck(activePlayer.color, newPieces, destinationIndex);
+    if (putSelfInCheck) {
+      this.warn('This will put yourself in check.')
+    } else if (!followThrough) {
+      return putSelfInCheck;
+    } else {
+      this.completeMove(newPieces, destinationIndex);
+    }
+    this.clearSquares();
   }
 
   revive = (piece, row, column) => {
@@ -302,7 +354,7 @@ class App extends Component {
         </div>
         <Board
           kill={this.kill}
-          movePiece={this.movePiece}
+          movePiece={this.prepMove}
           pieces={pieces}
           selectPiece={this.selectPiece}
           squares={squares}

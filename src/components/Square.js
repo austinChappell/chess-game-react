@@ -12,7 +12,7 @@ class Square extends Component {
       row,
     } = this.props;
     if (available) {
-      movePiece(row, column)
+      movePiece(row, column, true)
     }
   }
 
