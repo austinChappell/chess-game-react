@@ -114,16 +114,16 @@ class App extends Component {
     warning: null,
   }
 
-  clearWarning = () => {
-    this.setState({ warning: null });
-  }
-
   clearSquares = () => {
     const { squares } = this.state;
     squares.filter(sq => sq.available).forEach((sq) => {
       sq.available = false;
     });
     this.setState({ squares });
+  }
+
+  clearWarning = () => {
+    this.setState({ warning: null });
   }
 
   kill = (piece) => {
@@ -161,9 +161,6 @@ class App extends Component {
 
     // get piece where you are going
     const destinationResident = findPieceBySquare(squares, pieces, square);
-    if (destinationResident) {
-      this.kill(destinationResident);
-    }
 
     const piece = pieces.find(p => p.selected);
 
@@ -183,12 +180,12 @@ class App extends Component {
       const putSelfInCheck = this.listenForCheck(activePlayer.color);
       if (putSelfInCheck) {
         // logic to unde move and notify user
-        if (destinationResident) {
-          this.revive(destinationResident, row, column);
-        }
         this.moveBack(piece, index);
         this.warn('This will put yourself in check');
       } else {
+        if (destinationResident) {
+          this.kill(destinationResident);
+        }
         this.switchTurn();
         this.clearWarning();
       }
@@ -198,6 +195,7 @@ class App extends Component {
 
   moveBack = (piece, index) => {
     const { pieces } = this.state;
+    piece.selected = false;
     pieces[index] = piece;
     this.setState({ pieces });
   }
