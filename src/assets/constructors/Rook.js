@@ -19,8 +19,8 @@ class Rook extends ChessPiece {
     this.label = 'Rook';
     this.type = 'rook';
     this.icon = color === 'black' ? blackRook : whiteRook;
-    this.generateCurrentOptions = (rook, squares, pieceRow, pieceCol) => {
-      return findCurrentRookMoves(rook, squares, pieceRow, pieceCol);
+    this.generateCurrentOptions = (rook, squares, pieceRow, pieceCol, pieces) => {
+      return findCurrentRookMoves(rook, squares, pieceRow, pieceCol, pieces);
     };
   }
 }

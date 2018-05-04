@@ -37,7 +37,7 @@ class Pawn extends ChessPiece {
       { col: 0, row: 2 },
       { col: 0, row: -2 },
     ];
-    this.generateCurrentOptions = (pawn, squares, pieceRow, pieceCol) => {
+    this.generateCurrentOptions = (pawn, squares, pieceRow, pieceCol, pieces) => {
       const { hasMoved, orientation } = pawn;
       
       if (hasMoved) {
@@ -52,7 +52,7 @@ class Pawn extends ChessPiece {
       const maxCol = pieceCol + pawn.maxX;
       const minCol = pieceCol + pawn.minX;
 
-      return findCurrentPawnMoves(pawn, squares, maxRow, minRow, maxCol, minCol);
+      return findCurrentPawnMoves(pawn, squares, maxRow, minRow, maxCol, minCol, pieces);
     };
   }
 }

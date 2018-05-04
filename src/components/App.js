@@ -127,27 +127,29 @@ class App extends Component {
     this.setState({ warning: null });
   }
 
-  kill = (piece) => {
+  kill = (index) => {
     const { pieces } = this.state;
+    const piece = pieces[index]
     piece.alive = false;
     piece.row = null;
     piece.column = null;
     this.setState({ pieces });
   }
 
-  listenForCheck = (color, destinationResident) => {
+  listenForCheck = (color, pieces, destinationIndex) => {
     const {
-      pieces,
       squares,
     } = this.state;
     // get all living pieces of opposite color, omitting the one about to be killed
-    const livingPieces = pieces.filter(p => p.alive && p.color !== color && p !== destinationResident);
+    const livingPieces = pieces.filter((p, index) => {
+      return p.alive && p.color !== color && index !== destinationIndex
+    });
     const king = pieces.find(p => p.isKing && p.color === color);
 
     // all options for living pieces
     const allMoves = [];
     livingPieces.forEach((piece) => {
-      const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column);
+      const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column, pieces);
       allMoves.push(...moves);
     });
     const kingPiece = allMoves.find(square => square.row === king.row && square.column === king.column);
@@ -160,9 +162,11 @@ class App extends Component {
     const { squares } = this.state;
     const { pieces } = this.state;
     const square = getSquare(squares, row, column);
+    const newPieces = pieces.map(p => ({ ...p }));
 
     // get piece where you are going
     const destinationResident = findPieceBySquare(squares, pieces, square);
+    const destinationIndex = pieces.indexOf(destinationResident);
 
     const piece = pieces.find(p => p.selected);
 
@@ -175,24 +179,19 @@ class App extends Component {
       selected: false,
     };
     const index = pieces.indexOf(piece);
-    pieces[index] = newPiece;
-    
-    this.setState({ pieces }, () => {
-      const putSelfInCheck = this.listenForCheck(activePlayer.color, destinationResident);
-      if (putSelfInCheck) {
-        // logic to unde move and notify user
-        this.moveBack(piece, index);
-        this.warn('This will put yourself in check');
-      } else {
+    newPieces[index] = newPiece;
+    const putSelfInCheck = this.listenForCheck(activePlayer.color, newPieces, destinationIndex);
+    if (!putSelfInCheck) {
+      this.setState({ pieces: newPieces }, () => {
         if (destinationResident) {
-          this.kill(destinationResident);
+          this.kill(destinationIndex);
         }
-        const check = this.listenForCheck(inactivePlayer.color, null);
+        const check = this.listenForCheck(inactivePlayer.color, newPieces, null);
         this.switchTurn(check);
         this.clearWarning();
-      }
-      this.clearSquares();
-    })
+        this.clearSquares();
+      })
+    }
   }
 
   moveBack = (piece, index) => {
@@ -212,10 +211,11 @@ class App extends Component {
 
   selectPiece = (piece) => {
     const {
+      pieces,
       players,
       squares,
     } = this.state;
-    const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column);
+    const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column, pieces);
     piece.currentMoves = moves;
     const activeColor = players.find(p => p.isTurn).color;
     if (piece.color === activeColor) {

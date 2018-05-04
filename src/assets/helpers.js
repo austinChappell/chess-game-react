@@ -9,14 +9,15 @@ class Helpers {
     return square || null;
   }
 
-  findCurrentBishopMoves = (rook, squares, pieceRow, pieceCol) => {
+  findCurrentBishopMoves = (rook, squares, pieceRow, pieceCol, pieces) => {
     let maxQ1 = 8;
     let maxQ2 = 8;
     let maxQ3 = 8;
     let maxQ4 = 8;
 
     const options = squares.filter((square) => {
-      const occupied = square.piece !== null;
+      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const occupied = currentPiece !== null;
       const {
         column: squareCol,
         row: squareRow,
@@ -48,7 +49,8 @@ class Helpers {
     });
 
     return options.filter((square) => {
-      const occupiedBySelf = square.piece && square.piece.color === rook.color;
+      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const occupiedBySelf = currentPiece ? currentPiece.color === rook.color : false;
 
       const {
         column: squareCol,
@@ -79,9 +81,10 @@ class Helpers {
     });
   }
 
-  findCurrentKingMoves = (king, squares, pieceRow, pieceCol) => {
+  findCurrentKingMoves = (king, squares, pieceRow, pieceCol, pieces) => {
     return squares.filter((square) => {
-      const occupiedBySelf = square.piece && square.piece.color === king.color;
+      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const occupiedBySelf = currentPiece ? currentPiece.color === king.color : false;
       const {
         column: squareCol,
         row: squareRow,
@@ -95,9 +98,10 @@ class Helpers {
     });
   }
 
-  findCurrentKnightMoves = (knight, squares, pieceRow, pieceCol) => {
+  findCurrentKnightMoves = (knight, squares, pieceRow, pieceCol, pieces) => {
     return squares.filter((square) => {
-      const occupiedBySelf = square.piece && square.piece.color === knight.color;
+      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const occupiedBySelf = currentPiece ? currentPiece.color === knight.color : false;
       const {
         column: squareCol,
         row: squareRow,
@@ -111,14 +115,15 @@ class Helpers {
     });
   }
 
-  findCurrentPawnMoves = (pawn, squares, maxRow, minRow, maxCol, minCol) => {
+  findCurrentPawnMoves = (pawn, squares, maxRow, minRow, maxCol, minCol, pieces) => {
     const {
       hasMoved,
       orientation,
     } = pawn;
     return squares.filter((square) => {
-      const occupied = square.piece !== null;
-      const occupiedByOpp = square.piece && square.piece.color !== pawn.color;
+      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const occupied = currentPiece !== null;
+      const occupiedByOpp = currentPiece ? currentPiece.color !== pawn.color : false;
 
       // if opponent, expand column range to allow for diagonal movement
       const realMaxCol = occupiedByOpp ? maxCol : maxCol - 1;
@@ -152,7 +157,8 @@ class Helpers {
             } = pawn;
             return sq.row === row + orientation && sq.column === column;
           });
-          const blocked = squareInFront.piece !== null;
+          const pieceInFront = this.findPieceBySquare(squares, pieces, squareInFront);
+          const blocked = pieceInFront !== null;
           return !isLateral && !hasMoved && !occupied && !blocked;
         } else if (!sameRow && inRange) {
           return !occupied;
@@ -161,7 +167,7 @@ class Helpers {
     });
   }
 
-  findCurrentRookMoves = (rook, squares, pieceRow, pieceCol) => {
+  findCurrentRookMoves = (rook, squares, pieceRow, pieceCol, pieces) => {
     // initialize limits
     let maxRow = 8;
     let minRow = -8;
@@ -170,7 +176,8 @@ class Helpers {
     
     // get all options, and resize limits as needed
     const options = squares.filter((square) => {
-      const occupied = square.piece !== null;
+      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const occupied = currentPiece !== null;
       const {
         column: squareCol,
         row: squareRow,
@@ -210,7 +217,8 @@ class Helpers {
     });
 
     return options.filter((square) => {
-      const occupiedBySelf = square.piece && square.piece.color === rook.color;
+      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const occupiedBySelf = currentPiece ? currentPiece.color === rook.color : false;
       const {
         column: squareCol,
         row: squareRow,

@@ -19,8 +19,8 @@ class Bishop extends ChessPiece {
     this.label = 'Bishop';
     this.type = 'bishop';
     this.icon = color === 'black' ? blackBishop : whiteBishop;
-    this.generateCurrentOptions = (bishop, squares, pieceRow, pieceCol) => {
-      return findCurrentBishopMoves(bishop, squares, pieceRow, pieceCol);
+    this.generateCurrentOptions = (bishop, squares, pieceRow, pieceCol, pieces) => {
+      return findCurrentBishopMoves(bishop, squares, pieceRow, pieceCol, pieces);
     };
   }
 }

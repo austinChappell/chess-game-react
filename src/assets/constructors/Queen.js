@@ -20,9 +20,9 @@ class Queen extends ChessPiece {
     this.label = 'Queen';
     this.type = 'queen';
     this.icon = color === 'black' ? blackQueen : whiteQueen;
-    this.generateCurrentOptions = (queen, squares, pieceRow, pieceCol) => {
-      const straightOptions = findCurrentRookMoves(queen, squares, pieceRow, pieceCol);
-      const diagOptions = findCurrentBishopMoves(queen, squares, pieceRow, pieceCol);
+    this.generateCurrentOptions = (queen, squares, pieceRow, pieceCol, pieces) => {
+      const straightOptions = findCurrentRookMoves(queen, squares, pieceRow, pieceCol, pieces);
+      const diagOptions = findCurrentBishopMoves(queen, squares, pieceRow, pieceCol, pieces);
       const allOptions = [...straightOptions, ...diagOptions];
       return allOptions;
     };

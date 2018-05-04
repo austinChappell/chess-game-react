@@ -19,8 +19,8 @@ class King extends ChessPiece {
     this.label = 'King';
     this.type = 'king';
     this.icon = color === 'black' ? blackKing : whiteKing;
-    this.generateCurrentOptions = (king, squares, pieceRow, pieceCol) => {
-      return findCurrentKingMoves(king, squares, pieceRow, pieceCol);
+    this.generateCurrentOptions = (king, squares, pieceRow, pieceCol, pieces) => {
+      return findCurrentKingMoves(king, squares, pieceRow, pieceCol, pieces);
     };
     this.isKing = true;
   }
