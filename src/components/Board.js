@@ -39,6 +39,7 @@ class Board extends Component {
           {pieces.map((piece, index) => {
             // find the square that the piece is on
             const foundSquare = findSquareByPiece(pieces, squares, piece);
+            const selectedPiece = pieces.find(p => p.selected);
 
             if (piece.alive && foundSquare) {
               return (
@@ -52,9 +53,10 @@ class Board extends Component {
                   piece={piece}
                   selected={piece.selected}
                   selectPiece={selectPiece}
+                  selectedPiece={selectedPiece}
                   width={squareWidth}
                 />
-              )
+              );
             }
           })}
           {squares.map((square, index) => {
@@ -69,6 +71,7 @@ class Board extends Component {
             // mark a square as occupied
             const foundPiece = findPieceBySquare(squares, pieces, square);
             square.piece = foundPiece;
+            const selectedPiece = pieces.find(p => p.selected);
 
             const evenRow = top % (squareWidth * 2) === 0;
             const evenColumn = left % (squareWidth * 2) === 0;
@@ -82,6 +85,7 @@ class Board extends Component {
                 left={left}
                 movePiece={movePiece}
                 row={row}
+                selectedPiece={selectedPiece}
                 top={top}
                 width={squareWidth}
               />
