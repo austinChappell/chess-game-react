@@ -62,17 +62,15 @@ class App extends Component {
     players: [
       {
         castled: false,
-        checked: false,
         color: 'black',
-        hasBeenCheck: false,
+        hasBeenChecked: false,
         isTurn: true,
         label: 'Player One',
       },
       {
         castled: false,
-        checked: false,
         color: 'white',
-        hasBeenCheck: false,
+        hasBeenChecked: false,
         isTurn: false,
         label: 'Player Two',
       },
@@ -306,6 +304,9 @@ class App extends Component {
         p.isTurn = false;
       } else {
         p.isTurn = true;
+        if (check) {
+          p.hasBeenChecked = true;
+        }
       }
     });
     // update players and see if check
