@@ -9,14 +9,18 @@ class Helpers {
     return square || null;
   }
 
-  findCurrentBishopMoves = (rook, squares, pieceRow, pieceCol, pieces) => {
+  findCurrentBishopMoves = (bishop, squares, pieceRow, pieceCol, pieces) => {
+    // console.log('BISHOP PIECES', pieces);
+    // console.log('BISHOP SQUARES', squares);
+    // console.log('BISHOP', bishop);
     let maxQ1 = 8;
     let maxQ2 = 8;
     let maxQ3 = 8;
     let maxQ4 = 8;
 
     const options = squares.filter((square) => {
-      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      // const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const currentPiece = square.piece ? square.piece : null;
       const occupied = currentPiece !== null;
       const {
         column: squareCol,
@@ -49,14 +53,16 @@ class Helpers {
     });
 
     return options.filter((square) => {
-      const currentPiece = this.findPieceBySquare(squares, pieces, square);
-      const occupiedBySelf = currentPiece ? currentPiece.color === rook.color : false;
-
+      // console.log('BISHOP SQUARES', squares);
+      // const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const currentPiece = square.piece ? square.piece : null;
+      const occupiedBySelf = currentPiece ? currentPiece.color === bishop.color : false;
+      
       const {
         column: squareCol,
         row: squareRow,
       } = square;
-
+      
       const rowDiff = squareRow - pieceRow;
       const colDiff = squareCol - pieceCol;
       const isQuadrant1 = rowDiff > 0 && colDiff > 0;
@@ -65,7 +71,7 @@ class Helpers {
       const isQuadrant4 = rowDiff > 0 && colDiff < 0;
       const numOfSteps = Math.abs(rowDiff);
       let isValid = false;
-
+      
       // block off bishop if piece is in the way
       if (isQuadrant1) {
         isValid = numOfSteps <= maxQ1 && !occupiedBySelf;
@@ -76,14 +82,13 @@ class Helpers {
       } else if (isQuadrant4) {
         isValid = numOfSteps <= maxQ4 && !occupiedBySelf;
       }
-
       return isValid;
     });
   }
 
   findCurrentKingMoves = (king, squares, pieceRow, pieceCol, pieces) => {
     return squares.filter((square) => {
-      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const currentPiece = square.piece ? square.piece : null;
       const occupiedBySelf = currentPiece ? currentPiece.color === king.color : false;
       const {
         column: squareCol,
@@ -100,7 +105,7 @@ class Helpers {
 
   findCurrentKnightMoves = (knight, squares, pieceRow, pieceCol, pieces) => {
     return squares.filter((square) => {
-      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const currentPiece = square.piece ? square.piece : null;
       const occupiedBySelf = currentPiece ? currentPiece.color === knight.color : false;
       const {
         column: squareCol,
@@ -121,7 +126,7 @@ class Helpers {
       orientation,
     } = pawn;
     return squares.filter((square) => {
-      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const currentPiece = square.piece ? square.piece : null;
       const occupied = currentPiece !== null;
       const occupiedByOpp = currentPiece ? currentPiece.color !== pawn.color : false;
 
@@ -176,7 +181,7 @@ class Helpers {
     
     // get all options, and resize limits as needed
     const options = squares.filter((square) => {
-      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const currentPiece = square.piece ? square.piece : null;
       const occupied = currentPiece !== null;
       const {
         column: squareCol,
@@ -217,7 +222,7 @@ class Helpers {
     });
 
     return options.filter((square) => {
-      const currentPiece = this.findPieceBySquare(squares, pieces, square);
+      const currentPiece = square.piece ? square.piece : null;
       const occupiedBySelf = currentPiece ? currentPiece.color === rook.color : false;
       const {
         column: squareCol,
