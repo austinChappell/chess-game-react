@@ -154,9 +154,7 @@ class App extends Component {
       const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column, pieces);
       allMoves.push(...moves);
     });
-    console.log('ALL MOVES', allMoves);
     const kingPiece = allMoves.find(square => square.row === king.row && square.column === king.column);
-    console.log('KING PIECE', kingPiece);
     return kingPiece !== undefined;
   }
 
@@ -193,7 +191,7 @@ class App extends Component {
       this.switchTurn(check);
       this.clearWarning();
       this.clearSquares();
-    });
+    })
   }
 
   // followThrough if set to true, will actually attempt the move
@@ -238,7 +236,7 @@ class App extends Component {
     if (!followThrough) {
       return putSelfInCheck;
     } else if (putSelfInCheck) {
-      this.warn('This will put yourself in check.');
+      this.warn('This will put yourself in check.')
     } else {
       this.completeMove(newPieces, destinationIndex);
     }
