@@ -72,7 +72,7 @@ class Board extends Component {
 
             const evenRow = top % (squareWidth * 2) === 0;
             const evenColumn = left % (squareWidth * 2) === 0;
-            const dark = evenRow === evenColumn;
+            const dark = evenRow !== evenColumn;
             return (
               <Square
                 key={index}
