@@ -59,6 +59,7 @@ const generateSquares = () => {
 
 class App extends Component {
   state = {
+    gameOver: false,
     players: [
       {
         castled: false,
@@ -126,7 +127,7 @@ class App extends Component {
   }
 
   completeGame = () => {
-    console.log('GAME COMPLETE');
+    this.setState({ gameOver: true });
   }
 
   kill = (index) => {
@@ -249,7 +250,7 @@ class App extends Component {
     if (!followThrough) {
       return putSelfInCheck;
     } else if (putSelfInCheck) {
-      this.warn('This will put yourself in check.')
+      this.warn('This will put yourself in check.', true)
     } else {
       this.completeMove(newPieces, destinationIndex);
     }
@@ -266,6 +267,7 @@ class App extends Component {
 
   selectPiece = (piece) => {
     const {
+      gameOver,
       pieces,
       players,
       squares,
@@ -288,9 +290,11 @@ class App extends Component {
       const newPiece = { ...piece, selected: !piece.selected };
       const index = pieces.indexOf(piece);
       pieces[index] = newPiece;
-      this.setState({ pieces }, () => {
-        this.setCurrentChoices();
-      });
+      if (!gameOver) {
+        this.setState({ pieces }, () => {
+          this.setCurrentChoices();
+        });
+      }
     }
   }
 
@@ -333,20 +337,22 @@ class App extends Component {
       if (check) {
         const checkmate = this.listenForCheckmate();
         if (checkmate) {
-          this.warn('CHECKMATE!');
+          this.warn('CHECKMATE!', false);
           this.completeGame();
         } else {
-          this.warn('CHECK!')
+          this.warn('CHECK!', true)
         }
       }
     });
   }
 
-  warn = (warning) => {
+  warn = (warning, clear) => {
     this.setState({ warning }, () => {
-      setTimeout(() => {
-        this.clearWarning();
-      }, 2000);
+      if (clear) {
+        setTimeout(() => {
+          this.clearWarning();
+        }, 2000);
+      }
     });
   }
 

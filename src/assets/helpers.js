@@ -139,8 +139,9 @@ class Helpers {
         }
       }
       const castleAllowed = canCastle && castleMove;
+      const isValid = isOneStep && !occupiedBySelf;
       
-      return isOneStep && !occupiedBySelf || castleAllowed;;
+      return isValid || castleAllowed;
     });
   }
 
@@ -155,7 +156,9 @@ class Helpers {
 
       const rowDiff = Math.abs(squareRow - pieceRow);
       const colDiff = Math.abs(squareCol - pieceCol);
-      const isValid = rowDiff === 2 && colDiff === 1 || rowDiff === 1 && colDiff === 2;
+      const upAndOver = rowDiff === 2 && colDiff === 1;
+      const overAndUp = rowDiff === 1 && colDiff === 2;
+      const isValid = upAndOver || overAndUp;
 
       return !occupiedBySelf && isValid;
     });
@@ -166,6 +169,8 @@ class Helpers {
       hasMoved,
       orientation,
     } = pawn;
+
+    // eslint-disable-next-line
     return squares.filter((square) => {
       const currentPiece = square.piece ? square.piece : null;
       const occupied = currentPiece !== null;

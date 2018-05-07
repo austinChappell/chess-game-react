@@ -36,6 +36,7 @@ class Board extends Component {
             width: boardWidth,
           }}
         >
+
           {pieces.map((piece, index) => {
             // find the square that the piece is on
             const foundSquare = findSquareByPiece(pieces, squares, piece);
