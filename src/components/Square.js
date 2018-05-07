@@ -9,10 +9,9 @@ class Square extends Component {
       column,
       movePiece,
       row,
-      selectedPiece,
     } = this.props;
     if (available) {
-      movePiece(selectedPiece, row, column, true)
+      movePiece(row, column, true)
     }
   }
 
