@@ -22,6 +22,7 @@ class Rook extends ChessPiece {
     this.generateCurrentOptions = (rook, squares, pieceRow, pieceCol, pieces) => {
       return findCurrentRookMoves(rook, squares, pieceRow, pieceCol, pieces);
     };
+    this.isRook = true;
   }
 }
 

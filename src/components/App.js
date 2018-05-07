@@ -230,6 +230,21 @@ class App extends Component {
     } else {
       newPieces[index] = newPiece;
     }
+
+    const isTwoOver = Math.abs(piece.column - column) === 2;
+    const isCastling = piece.isKing && isTwoOver;
+    if (isCastling) {
+      const isLeft = column < piece.column;
+      const rookColumn = isLeft ? 1 : 8;
+      const rook = findPieceBySquare(squares, pieces, { row: piece.row, column: rookColumn })
+      const rookIndex = pieces.findIndex(p => p.row === row && p.column === rookColumn);
+      
+      // move the rook for the castle
+      rook.column = isLeft ? column + 1 : column - 1;
+      newPieces[rookIndex] = rook;
+      activePlayer.castled = true;
+    }
+
     const putSelfInCheck = this.listenForCheck(activePlayer.color, newPieces, destinationIndex, squares);
     if (!followThrough) {
       return putSelfInCheck;
@@ -255,9 +270,10 @@ class App extends Component {
       players,
       squares,
     } = this.state;
-    const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column, pieces);
+    const activePlayer = players.find(p => p.isTurn);
+    const activeColor = activePlayer.color;
+    const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column, pieces, activePlayer);
     piece.currentMoves = moves;
-    const activeColor = players.find(p => p.isTurn).color;
     if (piece.color === activeColor) {
       const pieces = this.state.pieces.slice();
       const prevSelection = pieces.find(p => p.selected);

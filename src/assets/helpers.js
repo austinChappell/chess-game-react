@@ -86,7 +86,29 @@ class Helpers {
     });
   }
 
-  findCurrentKingMoves = (king, squares, pieceRow, pieceCol, pieces) => {
+  findCurrentKingMoves = (king, squares, pieceRow, pieceCol, pieces, player) => {
+    // only get this value if it is passed in.
+    // otherwise, we do not want to get castle options, as we are then looking for "check-escapes"
+    const hasBeenChecked = player ? player.hasBeenChecked : true;
+    const { hasMoved } = king;
+    const columns = [1,2,3,4,5,6,7,8];
+
+    // getting the corner rooks for castling
+    const rightCornerPiece = this.findPieceBySquare(squares, pieces, { row: pieceRow, column: 8 });
+    const leftCornerPiece = this.findPieceBySquare(squares, pieces, { row: pieceRow, column: 1 });
+
+    // return array of numbers for columns to right and left of king, not including the outer columns
+    const rightSideColumns = columns.filter(col => col < 8 && col > pieceCol);
+    const leftSideColumns = columns.filter(col => col > 1 && col < pieceCol);
+
+    // get squares directly to right or left of king using filtered columns
+    const rightSideSquares = squares.filter(sq => sq.row === pieceRow && rightSideColumns.includes(sq.column));
+    const leftSideSquares = squares.filter(sq => sq.row === pieceRow && leftSideColumns.includes(sq.column));
+
+    // determine if there are any pieces in these columns
+    const rightSideOpen = rightSideSquares.every(sq => !sq.piece);
+    const leftSideOpen = leftSideSquares.every(sq => !sq.piece);
+
     return squares.filter((square) => {
       const currentPiece = square.piece ? square.piece : null;
       const occupiedBySelf = currentPiece ? currentPiece.color === king.color : false;
@@ -95,11 +117,30 @@ class Helpers {
         row: squareRow,
       } = square;
 
+      let castleMove = false;
       const rowDiff = Math.abs(squareRow - pieceRow);
       const colDiff = Math.abs(squareCol - pieceCol);
+      const isRight = squareCol - pieceCol > 0;
+      const isLeft = squareCol - pieceCol < 0;
       const isOneStep = rowDiff <= 1 && colDiff <= 1;
+      const canCastle = !hasBeenChecked && !hasMoved;
+      const isTwoToSide = rowDiff === 0 && colDiff === 2;
+      if (isTwoToSide) {
+        if (isRight && rightCornerPiece) {
+          const rook = rightCornerPiece;
+          if (!rook.hasMoved && rightSideOpen) {
+            castleMove = true;
+          }
+        } else if (isLeft && leftCornerPiece) {
+          const rook = leftCornerPiece;
+          if (!rook.hasMoved && leftSideOpen) {
+            castleMove = true;
+          }
+        }
+      }
+      const castleAllowed = canCastle && castleMove;
       
-      return isOneStep && !occupiedBySelf;
+      return isOneStep && !occupiedBySelf || castleAllowed;;
     });
   }
 
