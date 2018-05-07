@@ -4,7 +4,6 @@ class Square extends Component {
   state = {}
 
   handleClick = () => {
-    console.log('MOVING PIECE')
     const {
       available,
       column,

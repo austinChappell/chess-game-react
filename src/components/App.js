@@ -78,22 +78,22 @@ class App extends Component {
       },
     ],
     pieces: [
-      // new Pawn('black', 7, 1, -1),
-      // new Pawn('black', 7, 2, -1),
-      // new Pawn('black', 7, 3, -1),
-      // new Pawn('black', 7, 4, -1),
-      // new Pawn('black', 7, 5, -1),
-      // new Pawn('black', 7, 6, -1),
-      // new Pawn('black', 7, 7, -1),
-      // new Pawn('black', 7, 8, -1),
-      // new Rook('black', 8, 1),
-      // new Knight('black', 8, 2),
-      new Bishop('black', 5, 6),
+      new Pawn('black', 7, 1, -1),
+      new Pawn('black', 7, 2, -1),
+      new Pawn('black', 7, 3, -1),
+      new Pawn('black', 7, 4, -1),
+      new Pawn('black', 7, 5, -1),
+      new Pawn('black', 7, 6, -1),
+      new Pawn('black', 7, 7, -1),
+      new Pawn('black', 7, 8, -1),
+      new Rook('black', 8, 1),
+      new Knight('black', 8, 2),
+      new Bishop('black', 8, 3),
       new King('black', 8, 4),
-      new Queen('black', 3, 2),
-      // new Bishop('black', 8, 6),
-      // new Knight('black', 8, 7),
-      // new Rook('black', 8, 8),
+      new Queen('black', 8, 5),
+      new Bishop('black', 8, 6),
+      new Knight('black', 8, 7),
+      new Rook('black', 8, 8),
       new Pawn('white', 2, 1, 1),
       new Pawn('white', 2, 2, 1),
       new Pawn('white', 2, 3, 1),
@@ -141,11 +141,6 @@ class App extends Component {
   }
 
   listenForCheck = (color, pieces, destinationIndex, squares) => {
-    // console.log('LISTEN FOR CHECK PIECES', pieces);
-    // const {
-    //   squares,
-    // } = this.state;
-    // console.log('SQUARES', squares);
     // get all living pieces of opposite color, omitting the one about to be killed
     const livingPieces = pieces.filter((p, index) => {
       return p.alive && p.color !== color && index !== destinationIndex
@@ -156,17 +151,9 @@ class App extends Component {
     // all options for living pieces
     const allMoves = [];
     livingPieces.forEach((piece) => {
-      // console.log('THE SQUARES', squares);
       const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column, pieces);
-      if (livingPieces.length === 2) {
-        console.log('PIECES', pieces);
-        console.log('MOVES', moves);
-        console.log('KING', king);
-      }
       allMoves.push(...moves);
     });
-    // console.log('KING', king);
-    // console.log('ALL MOVES', allMoves);
     const kingPiece = allMoves.find(square => square.row === king.row && square.column === king.column);
     return kingPiece !== undefined;
   }
@@ -185,7 +172,6 @@ class App extends Component {
       moves.forEach(move => {
         const putsSelfInCheck = this.prepMove(move.row, move.column, false, piece);
         if (!putsSelfInCheck) {
-          console.log('NOT IN CHECK', move, piece);
           isCheckMate = false;
         }
       })
@@ -212,7 +198,6 @@ class App extends Component {
   // is set to false, it is just checking the result of the move
   prepMove = (row, column, followThrough, preSelectedPiece) => {
     const activePlayer = this.state.players.find(p => p.isTurn);
-    const inactivePlayer = this.state.players.find(p => !p.isTurn);
     const squares = this.state.squares.map(sq => {
       sq.piece = sq.piece ? {...sq.piece} : null;
       return {...sq};
@@ -240,17 +225,13 @@ class App extends Component {
       row,
       selected: false,
     };
-    console.log('NEW PIECE', newPiece);
     const oldIndex = pieces.findIndex(p => p.row === row && p.column === column);
-    console.log('old index', oldIndex, piece);
     const index = pieces.indexOf(piece);
-    console.log('INDEX', index);
     if (preSelectedPiece) {
       newPieces[oldIndex] = newPiece;
     } else {
       newPieces[index] = newPiece;
     }
-    console.log(newPieces);
     const putSelfInCheck = this.listenForCheck(activePlayer.color, newPieces, destinationIndex, squares);
     if (!followThrough) {
       return putSelfInCheck;
