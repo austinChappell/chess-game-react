@@ -7,12 +7,12 @@ class Piece extends Component {
       movePiece,
       piece,
       selectPiece,
-      selectedPiece,
     } = this.props;
     if (!foundSquare.available) {
       selectPiece(piece);
     } else {
-      movePiece(selectedPiece, foundSquare.row, foundSquare.column, true);
+      movePiece(foundSquare.row, foundSquare.column, true);
+      // kill(piece);
     }
   }
 
