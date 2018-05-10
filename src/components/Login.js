@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import AuthAPI from '../assets/api/auth';
 
@@ -22,7 +23,6 @@ class Login extends Component {
   }
 
   handleRes = (res) => {
-    console.log('RESPONSE', res);
     if (res.username && this.state.signingUp) {
       this.setState({ signingUp: false }, () => {
         this.signIn();
@@ -33,11 +33,10 @@ class Login extends Component {
   }
 
   setUser = (user) => {
-    console.log('SETTING USER', user);
+    this.props.setUser(user);
   }
 
   signIn = () => {
-    console.log('SIGNING IN');
     login(this.state, this.handleRes, this.state.signingUp);
   }
 
@@ -91,4 +90,14 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapDispatchToProps = dispatch => ({
+  setUser: (data) => {
+    const action = {
+      type: 'SET_USER',
+      data,
+    };
+    return dispatch(action);
+  },
+});
+
+export default connect(null, mapDispatchToProps)(Login);
