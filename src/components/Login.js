@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 
+import AuthAPI from '../assets/api/auth';
+
+const authAPI = new AuthAPI();
+
+const {
+  login,
+} = authAPI;
+
 class Login extends Component {
   state = {
+    signingUp: false,
     password: '',
     username: '',
   };
@@ -12,8 +21,28 @@ class Login extends Component {
     this.setState(o);
   }
 
+  handleRes = (res) => {
+    console.log('RESPONSE', res);
+    if (res.username && this.state.signingUp) {
+      this.setState({ signingUp: false }, () => {
+        this.signIn();
+      });
+    } else if (res.token) {
+      this.setUser(res);
+    }
+  }
+
+  setUser = (user) => {
+    console.log('SETTING USER', user);
+  }
+
   signIn = () => {
     console.log('SIGNING IN');
+    login(this.state, this.handleRes, this.state.signingUp);
+  }
+
+  toggleAuth = () => {
+    this.setState({ signingUp: !this.state.signingUp });
   }
 
   render() {
@@ -21,6 +50,16 @@ class Login extends Component {
       password,
       username,
     } = this.state;
+
+    const switchMessage = this.state.signingUp ?
+      (
+        <p>Already have an account? <span onClick={this.toggleAuth}>Login</span></p>
+      )
+      :
+      (
+        <p>Need an account? <span onClick={this.toggleAuth}>Sign Up</span></p>
+      )
+
     return (
       <div className="Login">
         <div>
@@ -44,8 +83,9 @@ class Login extends Component {
         <button
           onClick={this.signIn}
         >
-          Sign In
+          {this.state.signingUp ? 'Sign Up' : 'Login'}
         </button>
+        {switchMessage}
       </div>
     );
   }
