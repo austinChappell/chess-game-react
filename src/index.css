@@ -4,23 +4,23 @@
 .hide {
   display: none; }
 
-.App {
+.Board {
+  border: 30px solid #382624;
+  border-radius: 5px;
+  position: relative; }
+
+.Game {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh; }
-  .App .warning {
+  .Game .warning {
     height: 30px; }
-    .App .warning > * {
+    .Game .warning > * {
       color: red;
       font-size: 20px;
       margin: 0; }
-
-.Board {
-  border: 30px solid #382624;
-  border-radius: 5px;
-  position: relative; }
 
 .Modal {
   z-index: 20;
