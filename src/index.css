@@ -25,6 +25,53 @@ body {
       font-size: 20px;
       margin: 0; }
 
+.Home {
+  padding: 30px; }
+  .Home button {
+    background-color: darkgreen;
+    color: white;
+    font-size: 20px;
+    width: 250px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 5px 10px; }
+    .Home button:disabled {
+      background-color: #eeeeee;
+      color: #cccccc;
+      cursor: not-allowed; }
+
+.Login {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px; }
+  .Login .form-wrapper {
+    width: 200px; }
+  .Login label {
+    font-size: 14px; }
+  .Login input {
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    width: 100%; }
+  .Login button {
+    background-color: darkgreen;
+    color: white;
+    font-size: 20px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 5px 10px; }
+  .Login span {
+    color: royalblue;
+    cursor: pointer; }
+
 .Modal {
   z-index: 20;
   position: fixed;
@@ -44,7 +91,7 @@ body {
 .NavBar {
   display: flex;
   justify-content: space-between;
-  background-color: darkolivegreen;
+  background-color: darkgreen;
   padding: 20px 60px; }
   .NavBar a {
     color: white;

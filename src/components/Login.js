@@ -57,7 +57,7 @@ class Login extends Component {
 
     const switchMessage = this.state.signingUp ?
       (
-        <p>Already have an account? <span onClick={this.toggleAuth}>Login</span></p>
+        <p>Have an account? <span onClick={this.toggleAuth}>Login</span></p>
       )
       :
       (
@@ -75,31 +75,33 @@ class Login extends Component {
     return (
       <div className="Login">
         {authRedirect}
-        <div>
-          <label>username</label>
+        <div className="form-wrapper">
+          <div>
+            <label>username</label>
+          </div>
+          <div>
+            <input
+              onChange={e => this.handleChange(e, 'username')}
+              value={username}
+            />
+          </div>
+          <div>
+            <label>password</label>
+          </div>
+          <div>
+            <input
+              onChange={e => this.handleChange(e, 'password')}
+              type="password"
+              value={password}
+            />
+          </div>
+          <button
+            onClick={this.signIn}
+          >
+            {this.state.signingUp ? 'Sign Up' : 'Login'}
+          </button>
+          {switchMessage}
         </div>
-        <div>
-          <input
-            onChange={e => this.handleChange(e, 'username')}
-            value={username}
-          />
-        </div>
-        <div>
-          <label>password</label>
-        </div>
-        <div>
-          <input
-            onChange={e => this.handleChange(e, 'password')}
-            type="password"
-            value={password}
-          />
-        </div>
-        <button
-          onClick={this.signIn}
-        >
-          {this.state.signingUp ? 'Sign Up' : 'Login'}
-        </button>
-        {switchMessage}
       </div>
     );
   }
