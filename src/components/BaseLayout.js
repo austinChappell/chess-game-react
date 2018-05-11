@@ -1,12 +1,23 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import NavBar from './NavBar';
 
-const BaseLayout = props => (
-  <Fragment>
-    <NavBar />
-    {props.children}
-  </Fragment>
-);
+class BaseLayout extends Component {
+  componentDidMount() {
+    console.log('BASE LAYOUT MOUNTED');
+  }
+
+  render() {
+    const {
+      children,
+    } = this.props;
+    return (
+      <Fragment>
+        <NavBar />
+        {children}
+      </Fragment>
+    );
+  }
+}
 
 export default BaseLayout;

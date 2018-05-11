@@ -7,8 +7,6 @@ class AuthAPI {
   login = (user, cb, signingUp) => {
     const path = signingUp ? 'signup' : 'login';
     const url = `${apiURL}/${path}`;
-    console.log('URL', url);
-    console.log('USER', user);
     return fetch(url, {
       headers: {
         'Content-Type': 'application/json',

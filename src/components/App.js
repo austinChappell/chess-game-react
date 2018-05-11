@@ -8,6 +8,8 @@ import BaseLayout from './BaseLayout';
 import Game from './Game';
 import Home from './Home';
 import Login from './Login';
+import Logout from './Logout';
+import PrivateRoute from './PrivateRoute';
 
 console.log('ENVIRONMENT', process.env.NODE_ENV);
 
@@ -21,9 +23,10 @@ class App extends Component {
           <Router>
             <BaseLayout>
               <Switch>
-                <Route component={Home} exact path="/" />
-                <Route component={Game} path="/game" />
+                <PrivateRoute component={Home} exact path="/" />
+                <PrivateRoute component={Game} path="/game/:id" />
                 <Route component={Login} path="/login" />
+                <Route component={Logout} path="/logout" />
               </Switch>
             </BaseLayout>
           </Router>

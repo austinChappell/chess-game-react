@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import AuthAPI from '../assets/api/auth';
 
@@ -50,6 +51,10 @@ class Login extends Component {
       username,
     } = this.state;
 
+    const {
+      token,
+    } = this.props;
+
     const switchMessage = this.state.signingUp ?
       (
         <p>Already have an account? <span onClick={this.toggleAuth}>Login</span></p>
@@ -57,10 +62,19 @@ class Login extends Component {
       :
       (
         <p>Need an account? <span onClick={this.toggleAuth}>Sign Up</span></p>
-      )
+      );
+
+    const authRedirect = token ?
+      <Redirect to={{
+        pathname: "/",
+        state: { from: this.props.location }
+      }} />
+      :
+      null;
 
     return (
       <div className="Login">
+        {authRedirect}
         <div>
           <label>username</label>
         </div>
@@ -90,6 +104,10 @@ class Login extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  token: state.userReducer.token,
+});
+
 const mapDispatchToProps = dispatch => ({
   setUser: (data) => {
     const action = {
@@ -100,4 +118,4 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

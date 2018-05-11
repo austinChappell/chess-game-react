@@ -1,6 +1,9 @@
 * {
   font-family: sans-serif; }
 
+body {
+  margin: 0; }
+
 .hide {
   display: none; }
 
@@ -37,6 +40,16 @@
     background-color: white;
     padding: 20px 40px;
     border-radius: 5px; }
+
+.NavBar {
+  display: flex;
+  justify-content: space-between;
+  background-color: darkolivegreen;
+  padding: 20px 60px; }
+  .NavBar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px; }
 
 .Piece {
   position: absolute;

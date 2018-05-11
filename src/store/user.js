@@ -17,6 +17,9 @@ const reducer = (state = initialState, action) => {
       const { data } = action;
       return { ...state, ...data };
     }
+    case constants.LOGOUT: {
+      return { ...state, ...initialState };
+    }
     default:
       return state;
   }
