@@ -9,6 +9,7 @@ const { baseAPI } = data;
 
 class Home extends Component {
   state = {
+    error: null,
     gameId: null,
     waiting: false,
     whiteId: null,
@@ -46,6 +47,13 @@ class Home extends Component {
       }, 1000);
       this.stopWaiting = setTimeout(() => {
         this.socket.removeListener('RECEIVE_GAME');
+        this.setState({
+          error: 'Could not find an opponent at this time',
+          waiting: false,
+        });
+        setTimeout(() => {
+          this.setState({ error: null });
+        }, 2000);
       }, 5000);
     });
   }
@@ -56,8 +64,10 @@ class Home extends Component {
   
   receiveGame = (game) => {
     clearTimeout(this.stopWaiting);
-    this.socket.removeListener('RECEIVE_GAME');
-    this.socket.emit('JOIN_GAME', game);
+    this.setState({ waiting: false }, () => {
+      this.socket.removeListener('RECEIVE_GAME');
+      this.socket.emit('JOIN_GAME', game);
+    });
   }
 
   startGame = (game) => {
@@ -68,21 +78,34 @@ class Home extends Component {
   }
 
   render() {
-    const { gameId, whiteId } = this.state;
+    const {
+      error,
+      gameId,
+      waiting,
+      whiteId,
+    } = this.state;
     const redirect = gameId ?
       <Redirect to={`/game/${gameId}?start_id=${whiteId}`} />
       :
       null;
+
+    const buttonText = waiting ? 'Looking for Opponent' : 'Start a Game';
+    const errorMessage = error ?
+      (
+        <p style={{ color: 'red' }}>{error}</p>
+      ) : null;
 
     return (
       <div className="Home">
         {redirect}
         <h1>Home Component</h1>
         <button
+          disabled={waiting}
           onClick={this.createGame}
         >
-          Start A New Game
+          {buttonText}
         </button>
+        {errorMessage}
       </div>
     );
   }
