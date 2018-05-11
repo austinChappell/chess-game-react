@@ -26,29 +26,29 @@ const {
   Rook,
 } = pieceConstructors;
 
-const boardRows = [
-  { label: 1, top: 0 * 80 },
-  { label: 2, top: 1 * 80 },
-  { label: 3, top: 2 * 80 },
-  { label: 4, top: 3 * 80 },
-  { label: 5, top: 4 * 80 },
-  { label: 6, top: 5 * 80 },
-  { label: 7, top: 6 * 80 },
-  { label: 8, top: 7 * 80 },
-];
-
-const boardColumns = [
-  { label: 1, left: 0 * 80 },
-  { label: 2, left: 1 * 80 },
-  { label: 3, left: 2 * 80 },
-  { label: 4, left: 3 * 80 },
-  { label: 5, left: 4 * 80 },
-  { label: 6, left: 5 * 80 },
-  { label: 7, left: 6 * 80 },
-  { label: 8, left: 7 * 80 },
-];
-
-const generateSquares = () => {
+const generateSquares = (reverse) => {
+  const boardRows = [
+    { label: 1, top: reverse ? 7 * 80 : 0 * 80 },
+    { label: 2, top: reverse ? 6 * 80 : 1 * 80 },
+    { label: 3, top: reverse ? 5 * 80 : 2 * 80 },
+    { label: 4, top: reverse ? 4 * 80 : 3 * 80 },
+    { label: 5, top: reverse ? 3 * 80 : 4 * 80 },
+    { label: 6, top: reverse ? 2 * 80 : 5 * 80 },
+    { label: 7, top: reverse ? 1 * 80 : 6 * 80 },
+    { label: 8, top: reverse ? 0 * 80 : 7 * 80 },
+  ];
+  
+  const boardColumns = [
+    { label: 1, left: reverse ? 7 * 80 : 0 * 80 },
+    { label: 2, left: reverse ? 6 * 80 : 1 * 80 },
+    { label: 3, left: reverse ? 5 * 80 : 2 * 80 },
+    { label: 4, left: reverse ? 4 * 80 : 3 * 80 },
+    { label: 5, left: reverse ? 3 * 80 : 4 * 80 },
+    { label: 6, left: reverse ? 2 * 80 : 5 * 80 },
+    { label: 7, left: reverse ? 1 * 80 : 6 * 80 },
+    { label: 8, left: reverse ? 0 * 80 : 7 * 80 },
+  ];
+  
   const rows = boardColumns.map(col => boardRows.map(row => ({
     row: row.label,
     column: col.label,
@@ -74,50 +74,50 @@ class Game extends Component {
         castled: false,
         color: 'black',
         hasBeenChecked: false,
-        isTurn: true,
+        isTurn: false,
         label: 'Player One',
       },
       {
         castled: false,
         color: 'white',
         hasBeenChecked: false,
-        isTurn: false,
+        isTurn: true,
         label: 'Player Two',
       },
     ],
     pieces: [
-      new Pawn('black', 7, 1, -1),
-      new Pawn('black', 7, 2, -1),
-      new Pawn('black', 7, 3, -1),
-      new Pawn('black', 7, 4, -1),
-      new Pawn('black', 7, 5, -1),
-      new Pawn('black', 7, 6, -1),
-      new Pawn('black', 7, 7, -1),
-      new Pawn('black', 7, 8, -1),
-      new Rook('black', 8, 1),
-      new Knight('black', 8, 2),
-      new Bishop('black', 8, 3),
-      new King('black', 8, 4),
-      new Queen('black', 8, 5),
-      new Bishop('black', 8, 6),
-      new Knight('black', 8, 7),
-      new Rook('black', 8, 8),
-      new Pawn('white', 2, 1, 1),
-      new Pawn('white', 2, 2, 1),
-      new Pawn('white', 2, 3, 1),
-      new Pawn('white', 2, 4, 1),
-      new Pawn('white', 2, 5, 1),
-      new Pawn('white', 2, 6, 1),
-      new Pawn('white', 2, 7, 1),
-      new Pawn('white', 2, 8, 1),
-      new Rook('white', 1, 1),
-      new Knight('white', 1, 2),
-      new Bishop('white', 1, 3),
-      new King('white', 1, 4),
-      new Queen('white', 1, 5),
-      new Bishop('white', 1, 6),
-      new Knight('white', 1, 7),
-      new Rook('white', 1, 8),
+      new Pawn('white', 7, 1, -1),
+      new Pawn('white', 7, 2, -1),
+      new Pawn('white', 7, 3, -1),
+      new Pawn('white', 7, 4, -1),
+      new Pawn('white', 7, 5, -1),
+      new Pawn('white', 7, 6, -1),
+      new Pawn('white', 7, 7, -1),
+      new Pawn('white', 7, 8, -1),
+      new Rook('white', 8, 1),
+      new Knight('white', 8, 2),
+      new Bishop('white', 8, 3),
+      new King('white', 8, 4),
+      new Queen('white', 8, 5),
+      new Bishop('white', 8, 6),
+      new Knight('white', 8, 7),
+      new Rook('white', 8, 8),
+      new Pawn('black', 2, 1, 1),
+      new Pawn('black', 2, 2, 1),
+      new Pawn('black', 2, 3, 1),
+      new Pawn('black', 2, 4, 1),
+      new Pawn('black', 2, 5, 1),
+      new Pawn('black', 2, 6, 1),
+      new Pawn('black', 2, 7, 1),
+      new Pawn('black', 2, 8, 1),
+      new Rook('black', 1, 1),
+      new Knight('black', 1, 2),
+      new Bishop('black', 1, 3),
+      new King('black', 1, 4),
+      new Queen('black', 1, 5),
+      new Bishop('black', 1, 6),
+      new Knight('black', 1, 7),
+      new Rook('black', 1, 8),
     ],
     squares: generateSquares(),
     warning: null,
@@ -198,6 +198,10 @@ class Game extends Component {
   
       if (this.props.user.id !== Number(whiteId)) {
         this.socket.emit('SET_IDS', { whiteId, blackId: this.props.user.id });
+        // flipboard
+        const squares = generateSquares(true);
+        console.log('REVERSED SQUARES', squares);
+        this.setState({ squares });
       }
     });
   }
