@@ -24,6 +24,7 @@ class Home extends Component {
 
     // TODO: this is a bug
     this.socket.on('START_GAME', (game) => {
+      console.log('START GAME', game);
       this.startGame(game);
     });
   }
@@ -42,6 +43,7 @@ class Home extends Component {
     this.setState({ waiting: true }, () => {
       setTimeout(() => {
         this.socket.on('RECEIVE_GAME', (game) => {
+          console.log('RECEIVE GAME', game);
           this.receiveGame(game);
         });
       }, 1000);
@@ -58,23 +60,25 @@ class Home extends Component {
     });
   }
 
-  joinGame = (game) => {
-    console.log('JOINING GAME', game);
-  }
-  
   receiveGame = (game) => {
     clearTimeout(this.stopWaiting);
     this.setState({ waiting: false }, () => {
       this.socket.removeListener('RECEIVE_GAME');
       this.socket.emit('JOIN_GAME', game);
     });
-  }
-
-  startGame = (game) => {
     this.setState({
       gameId: game.id,
       whiteId: game.userId,
     });
+  }
+
+  startGame = (game) => {
+    if (game.userId === this.props.user.id) {
+      this.setState({
+        gameId: game.id,
+        whiteId: game.userId,
+      });
+    }
   }
 
   render() {
