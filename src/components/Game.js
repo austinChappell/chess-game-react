@@ -371,7 +371,7 @@ class Game extends Component {
   selectPiece = (piece, fromSocket) => {
     const userId = this.props.user.id;
     const activeUser = this.state.players.find(p => p.isTurn);
-    if (userId === activeUser.id) {
+    if (userId === activeUser.id || !this.state.gameId) {
       // if (!fromSocket) {
       //   this.socket.emit('SELECT_PIECE', { piece, userId });
       // }
