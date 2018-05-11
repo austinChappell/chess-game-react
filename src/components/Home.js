@@ -30,6 +30,7 @@ class Home extends Component {
   }
 
   componentWillUnmount() {
+    this.socket.removeAllListeners();
     this.socket.close();
   }
 
