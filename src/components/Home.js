@@ -11,16 +11,17 @@ class Home extends Component {
   state = {
     gameId: null,
     waiting: false,
+    whiteId: null,
   }
 
   componentDidMount() {
-    console.log('API', baseAPI);
     this.socket = io(baseAPI);
 
     this.socket.on('connection', () => {
       console.log('CONNECTED');
     });
 
+    // TODO: this is a bug
     this.socket.on('START_GAME', (game) => {
       this.startGame(game);
     });
@@ -64,13 +65,14 @@ class Home extends Component {
     console.log('START GAME', game);
     this.setState({
       gameId: game.id,
+      whiteId: game.userId,
     });
   }
 
   render() {
-    const { gameId } = this.state;
+    const { gameId, whiteId } = this.state;
     const redirect = gameId ?
-      <Redirect to={`/game/${gameId}`} />
+      <Redirect to={`/game/${gameId}?start_id=${whiteId}`} />
       :
       null;
 

@@ -62,6 +62,10 @@ const generateSquares = () => {
   return squares;
 };
 
+// randomly assign mutli players by who has the lower id
+// will either be 1 or 0
+const playerOneLower = Math.floor(Math.random() * 2) === 0;
+
 class Game extends Component {
   state = {
     gameOver: false,
@@ -121,44 +125,55 @@ class Game extends Component {
 
   componentDidMount() {
     const gameId = this.props.match.params.id;
-    this.setMutliPlayer(gameId);
+    const query = this.props.location.search;
+    const whiteId = query.split('=')[1];
+    this.setMutliPlayer(gameId, whiteId);
   }
 
   componentWillUnmount() {
     this.socket.close();
   }
 
-  setMutliPlayer = (gameId) => {
+  setMutliPlayer = (gameId, whiteId) => {
     this.setState({ gameId }, () => {
       this.socket = io(baseAPI);
 
       const room = gameId;
 
       this.socket.on('connect', () => {
-        this.socket.emit('ROOM', room);
+        const userId = this.props.user.id;
+        this.socket.emit('ROOM', { room, userId });
       });
 
-      this.socket.on('MOVE', ({
-        row,
-        column,
-        followThrough,
-        preSelectedPiece,
-      }) => {
-        this.prepMove(row, column, followThrough, preSelectedPiece);
+      this.socket.on('RECEIVE_ID', (userId) => {
+        console.log('RECEIVED AN ID', userId);
       });
 
       this.socket.on('PUSH_MOVE', ({
         row,
         column,
         followThrough,
-        preSelectedPiece,
+        oldPiece,
         userId,
       }) => {
+        // came from opponent
+        // preents recursion
         if (userId !== this.props.user.id) {
-          const newPiece = this.state.pieces.find((p) => {
-            return p.row === preSelectedPiece.row && p.column === preSelectedPiece.column;
+          console.log('preselected from socket', oldPiece);
+          const self = this.state.players.find(p => p.id === this.props.user.id);
+          console.log('SELF', self);
+          const selectedPiece = this.state.pieces.find((p) => {
+            return p.row === oldPiece.row && p.column === oldPiece.column;
           });
-          this.prepMove(row, column, followThrough, newPiece);
+          if (selectedPiece) {
+            selectedPiece.selected = true;
+          };
+          console.log('PIECE', selectedPiece);
+          // opponent is moving
+          // selectedPiece will be undefined when it comes back from the server
+          if (selectedPiece && self.color !== selectedPiece.color) {
+            this.prepMove(row, column, followThrough, false);
+          }
         }
       });
 
@@ -170,6 +185,20 @@ class Game extends Component {
           this.selectPiece(newPiece, true);
         }
       });
+
+      // assign user ids to players
+      this.socket.on('RECEIVE_IDS', ({ whiteId, blackId }) => {
+        const { players } = this.state;
+        const blackPlayer = players.find(p => p.color === 'black');
+        const whitePlayer = players.find(p => p. color === 'white');
+        blackPlayer.id = blackId;
+        whitePlayer.id = Number(whiteId);
+        this.setState({ players });
+      });
+  
+      if (this.props.user.id !== Number(whiteId)) {
+        this.socket.emit('SET_IDS', { whiteId, blackId: this.props.user.id });
+      }
     });
   }
 
@@ -238,7 +267,9 @@ class Game extends Component {
   }
 
   completeMove = (pieces, destinationIndex) => {
+    console.log('COMPLETE MOVE FUNC RUNNING', pieces, destinationIndex);
     const inactivePlayer = this.state.players.find(p => !p.isTurn);
+    console.log('INACTIVE PLAYER', inactivePlayer);
     this.setState({ pieces }, () => {
       // if about to kill a piece
       const squares = this.state.squares.map(sq => ({ ...sq }));
@@ -255,6 +286,8 @@ class Game extends Component {
   // followThrough if set to true, will actually attempt the move
   // is set to false, it is just checking the result of the move
   prepMove = (row, column, followThrough, preSelectedPiece) => {
+    console.log('PREP MOVE');
+    console.log('PRESELECTED PIECE', preSelectedPiece);
     const activePlayer = this.state.players.find(p => p.isTurn);
     const squares = this.state.squares.map(sq => {
       sq.piece = sq.piece ? { ...sq.piece } : null;
@@ -270,6 +303,10 @@ class Game extends Component {
 
     const piece = preSelectedPiece ? preSelectedPiece : pieces.find(p => p.selected);
     // console.log('PIECE', piece);
+
+    // get old copy to send to server
+    const oldPiece = { ...piece };
+
     square.piece = square.piece ? { ...piece } : null;
     const squareIndex = squares.indexOf(square);
     const newSquare = { ...square };
@@ -283,13 +320,18 @@ class Game extends Component {
       row,
       selected: false,
     };
+
+    console.log('NEW PIECE', newPiece);
     const oldIndex = pieces.findIndex(p => p.row === row && p.column === column);
     const index = pieces.indexOf(piece);
     if (preSelectedPiece) {
+      console.log('OLD INDEX');
       newPieces[oldIndex] = newPiece;
     } else {
+      console.log('NEW INDEX');
       newPieces[index] = newPiece;
     }
+    console.log('NEW PIECES', newPieces);
 
     const isTwoOver = Math.abs(piece.column - column) === 2;
     const isCastling = piece.isKing && isTwoOver;
@@ -317,10 +359,11 @@ class Game extends Component {
           row,
           column,
           followThrough,
-          preSelectedPiece,
+          oldPiece,
           userId,
         });
       }
+      console.log('SHOULD COMPLETE MOVE');
       this.completeMove(newPieces, destinationIndex);
     }
     this.clearSquares();
@@ -337,37 +380,40 @@ class Game extends Component {
   selectPiece = (piece, fromSocket) => {
     console.log('SELECT PIECE');
     const userId = this.props.user.id;
-    if (!fromSocket) {
-      this.socket.emit('SELECT_PIECE', { piece, userId });
-    }
-    const {
-      gameOver,
-      pieces,
-      players,
-      squares,
-    } = this.state;
-    const activePlayer = players.find(p => p.isTurn);
-    const activeColor = activePlayer.color;
-    const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column, pieces, activePlayer);
-    piece.currentMoves = moves;
-    if (piece.color === activeColor) {
-      const pieces = this.state.pieces.slice();
-      const prevSelection = pieces.find(p => p.selected);
-      if (prevSelection) {
-        const index = pieces.indexOf(prevSelection);
-        const deselected = {
-          ...prevSelection,
-          selected: false,
-        };
-        pieces[index] = deselected;
-      }
-      const newPiece = { ...piece, selected: !piece.selected };
-      const index = pieces.indexOf(piece);
-      pieces[index] = newPiece;
-      if (!gameOver) {
-        this.setState({ pieces }, () => {
-          this.setCurrentChoices();
-        });
+    const activeUser = this.state.players.find(p => p.isTurn);
+    if (userId === activeUser.id) {
+      // if (!fromSocket) {
+      //   this.socket.emit('SELECT_PIECE', { piece, userId });
+      // }
+      const {
+        gameOver,
+        pieces,
+        players,
+        squares,
+      } = this.state;
+      const activePlayer = players.find(p => p.isTurn);
+      const activeColor = activePlayer.color;
+      const moves = piece.generateCurrentOptions(piece, squares, piece.row, piece.column, pieces, activePlayer);
+      piece.currentMoves = moves;
+      if (piece.color === activeColor) {
+        const pieces = this.state.pieces.slice();
+        const prevSelection = pieces.find(p => p.selected);
+        if (prevSelection) {
+          const index = pieces.indexOf(prevSelection);
+          const deselected = {
+            ...prevSelection,
+            selected: false,
+          };
+          pieces[index] = deselected;
+        }
+        const newPiece = { ...piece, selected: !piece.selected };
+        const index = pieces.indexOf(piece);
+        pieces[index] = newPiece;
+        if (!gameOver) {
+          this.setState({ pieces }, () => {
+            this.setCurrentChoices();
+          });
+        }
       }
     }
   }
