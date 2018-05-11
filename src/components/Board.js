@@ -89,6 +89,7 @@ class Board extends Component {
             )
           })}
         </div>
+        <h2>Click to select and move a piece.</h2>
       </Fragment>
     )
   }
