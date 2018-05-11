@@ -43,10 +43,9 @@ class Home extends Component {
     this.setState({ waiting: true }, () => {
       setTimeout(() => {
         this.socket.on('RECEIVE_GAME', (game) => {
-          console.log('RECEIVE GAME', game);
           this.receiveGame(game);
         });
-      }, 1000);
+      }, 500);
       this.stopWaiting = setTimeout(() => {
         this.socket.removeListener('RECEIVE_GAME');
         this.setState({
@@ -56,7 +55,7 @@ class Home extends Component {
         setTimeout(() => {
           this.setState({ error: null });
         }, 2000);
-      }, 5000);
+      }, 10000);
     });
   }
 
