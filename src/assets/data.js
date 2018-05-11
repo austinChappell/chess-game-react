@@ -14,7 +14,7 @@ import whiteKnight from './images/pieces/white_knight.png';
 
 const devAPI = 'http://localhost:5000';
 const prodAPI = 'https://chess-game-api.herokuapp.com';
-const baseAPI = process.env.NODE_ENV === 'development' ? devAPI : prodAPI;
+const baseAPI = process.env.REACT_APP_ENV === 'development' ? devAPI : prodAPI;
 
 const data = {
   api: `${baseAPI}/api`,

@@ -11,7 +11,7 @@ import Login from './Login';
 import Logout from './Logout';
 import PrivateRoute from './PrivateRoute';
 
-console.log('ENVIRONMENT', process.env.NODE_ENV);
+console.log('ENVIRONMENT', process.env.REACT_APP_ENV);
 
 class App extends Component {
   state = {}
