@@ -56,13 +56,11 @@ class Home extends Component {
   
   receiveGame = (game) => {
     clearTimeout(this.stopWaiting);
-    console.log('RECEIVE GAME', game);
     this.socket.removeListener('RECEIVE_GAME');
     this.socket.emit('JOIN_GAME', game);
   }
 
   startGame = (game) => {
-    console.log('START GAME', game);
     this.setState({
       gameId: game.id,
       whiteId: game.userId,
@@ -75,8 +73,6 @@ class Home extends Component {
       <Redirect to={`/game/${gameId}?start_id=${whiteId}`} />
       :
       null;
-
-    console.log('REDIRECT', redirect);
 
     return (
       <div className="Home">
