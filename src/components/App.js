@@ -25,6 +25,7 @@ class App extends Component {
               <Switch>
                 <PrivateRoute component={Home} exact path="/" />
                 <PrivateRoute component={Game} path="/game/:id" />
+                <Route component={Game} path="/game" />
                 <Route component={Login} path="/login" />
                 <Route component={Logout} path="/logout" />
               </Switch>

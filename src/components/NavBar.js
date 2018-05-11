@@ -17,7 +17,7 @@ const NavBar = (props) => {
           Home
         </NavLink>
         <NavLink to="/game">
-          Play
+          Single Player
         </NavLink>
       </div>
       <div>
@@ -26,8 +26,8 @@ const NavBar = (props) => {
         </NavLink>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const mapStateToProps = state => ({
   token: state.userReducer.token,

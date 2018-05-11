@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import io from 'socket.io-client';
+
+import data from '../assets/data';
 
 import Board from './Board';
 
 import pieceConstructors from '../assets/constructors/pieces';
 import Helpers from '../assets/helpers';
 
+const { baseAPI } = data;
 const helpers = new Helpers();
 
 const {
@@ -114,6 +119,60 @@ class Game extends Component {
     warning: null,
   }
 
+  componentDidMount() {
+    const gameId = this.props.match.params.id;
+    this.setMutliPlayer(gameId);
+  }
+
+  componentWillUnmount() {
+    this.socket.close();
+  }
+
+  setMutliPlayer = (gameId) => {
+    this.setState({ gameId }, () => {
+      this.socket = io(baseAPI);
+
+      const room = gameId;
+
+      this.socket.on('connect', () => {
+        this.socket.emit('ROOM', room);
+      });
+
+      this.socket.on('MOVE', ({
+        row,
+        column,
+        followThrough,
+        preSelectedPiece,
+      }) => {
+        this.prepMove(row, column, followThrough, preSelectedPiece);
+      });
+
+      this.socket.on('PUSH_MOVE', ({
+        row,
+        column,
+        followThrough,
+        preSelectedPiece,
+        userId,
+      }) => {
+        if (userId !== this.props.user.id) {
+          const newPiece = this.state.pieces.find((p) => {
+            return p.row === preSelectedPiece.row && p.column === preSelectedPiece.column;
+          });
+          this.prepMove(row, column, followThrough, newPiece);
+        }
+      });
+
+      this.socket.on('PUSH_SELECT_PIECE', ({ piece, userId }) => {
+        if (this.props.user.id !== userId) {
+          const newPiece = this.state.pieces.find((p) => {
+            return p.row === piece.row && p.column === piece.column;
+          });
+          this.selectPiece(newPiece, true);
+        }
+      });
+    });
+  }
+
   clearSquares = () => {
     const { squares } = this.state;
     squares.filter(sq => sq.available).forEach((sq) => {
@@ -190,7 +249,7 @@ class Game extends Component {
       this.switchTurn(check);
       this.clearWarning();
       this.clearSquares();
-    })
+    });
   }
 
   // followThrough if set to true, will actually attempt the move
@@ -252,6 +311,16 @@ class Game extends Component {
     } else if (putSelfInCheck) {
       this.warn('This will put yourself in check.', true)
     } else {
+      if (this.state.gameId) {
+        const userId = this.props.user.id;
+        this.socket.emit('MOVE_PIECE', {
+          row,
+          column,
+          followThrough,
+          preSelectedPiece,
+          userId,
+        });
+      }
       this.completeMove(newPieces, destinationIndex);
     }
     this.clearSquares();
@@ -265,7 +334,12 @@ class Game extends Component {
     this.setState({ pieces });
   }
 
-  selectPiece = (piece) => {
+  selectPiece = (piece, fromSocket) => {
+    console.log('SELECT PIECE');
+    const userId = this.props.user.id;
+    if (!fromSocket) {
+      this.socket.emit('SELECT_PIECE', { piece, userId });
+    }
     const {
       gameOver,
       pieces,
@@ -384,4 +458,8 @@ class Game extends Component {
   }
 }
 
-export default Game;
+const mapStateToProps = state => ({
+  user: state.userReducer.user,
+});
+
+export default connect(mapStateToProps)(Game);
