@@ -468,13 +468,28 @@ class Game extends Component {
 
   render() {
     const {
+      gameId,
       pieces,
+      players,
       squares,
     } = this.state;
+
+    const { user } = this.props;
 
     const warning = this.state.warning ?
       <h1>{this.state.warning}</h1>
       : null;
+
+    const myTurn = gameId ? players.find(p => p.isTurn).id === user.id : null;
+    const turnNotification = myTurn ? (
+      <h2>Your move. Click piece and square to select and move.</h2>
+    )
+    :
+    null;
+    const instructions = gameId ?
+      turnNotification
+      :
+      <h2>Click piece and square to select and move.</h2>;
 
     return (
       <div className="Game">
@@ -489,6 +504,9 @@ class Game extends Component {
           squares={squares}
           squareWidth={80}
         />
+        <div style={{ height: 100 }}>
+          {instructions}
+        </div>
       </div>
     );
   }
