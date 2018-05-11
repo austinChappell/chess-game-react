@@ -159,16 +159,14 @@ class Game extends Component {
         // came from opponent
         // preents recursion
         if (userId !== this.props.user.id) {
-          console.log('preselected from socket', oldPiece);
           const self = this.state.players.find(p => p.id === this.props.user.id);
-          console.log('SELF', self);
           const selectedPiece = this.state.pieces.find((p) => {
             return p.row === oldPiece.row && p.column === oldPiece.column;
           });
           if (selectedPiece) {
             selectedPiece.selected = true;
-          };
-          console.log('PIECE', selectedPiece);
+          }
+
           // opponent is moving
           // selectedPiece will be undefined when it comes back from the server
           if (selectedPiece && self.color !== selectedPiece.color) {
@@ -200,7 +198,6 @@ class Game extends Component {
         this.socket.emit('SET_IDS', { whiteId, blackId: this.props.user.id });
         // flipboard
         const squares = generateSquares(true);
-        console.log('REVERSED SQUARES', squares);
         this.setState({ squares });
       }
     });
@@ -271,9 +268,7 @@ class Game extends Component {
   }
 
   completeMove = (pieces, destinationIndex) => {
-    console.log('COMPLETE MOVE FUNC RUNNING', pieces, destinationIndex);
     const inactivePlayer = this.state.players.find(p => !p.isTurn);
-    console.log('INACTIVE PLAYER', inactivePlayer);
     this.setState({ pieces }, () => {
       // if about to kill a piece
       const squares = this.state.squares.map(sq => ({ ...sq }));
@@ -290,8 +285,6 @@ class Game extends Component {
   // followThrough if set to true, will actually attempt the move
   // is set to false, it is just checking the result of the move
   prepMove = (row, column, followThrough, preSelectedPiece) => {
-    console.log('PREP MOVE');
-    console.log('PRESELECTED PIECE', preSelectedPiece);
     const activePlayer = this.state.players.find(p => p.isTurn);
     const squares = this.state.squares.map(sq => {
       sq.piece = sq.piece ? { ...sq.piece } : null;
@@ -306,7 +299,6 @@ class Game extends Component {
     const destinationIndex = pieces.indexOf(destinationResident);
 
     const piece = preSelectedPiece ? preSelectedPiece : pieces.find(p => p.selected);
-    // console.log('PIECE', piece);
 
     // get old copy to send to server
     const oldPiece = { ...piece };
@@ -325,17 +317,13 @@ class Game extends Component {
       selected: false,
     };
 
-    console.log('NEW PIECE', newPiece);
     const oldIndex = pieces.findIndex(p => p.row === row && p.column === column);
     const index = pieces.indexOf(piece);
     if (preSelectedPiece) {
-      console.log('OLD INDEX');
       newPieces[oldIndex] = newPiece;
     } else {
-      console.log('NEW INDEX');
       newPieces[index] = newPiece;
     }
-    console.log('NEW PIECES', newPieces);
 
     const isTwoOver = Math.abs(piece.column - column) === 2;
     const isCastling = piece.isKing && isTwoOver;
@@ -367,7 +355,6 @@ class Game extends Component {
           userId,
         });
       }
-      console.log('SHOULD COMPLETE MOVE');
       this.completeMove(newPieces, destinationIndex);
     }
     this.clearSquares();
@@ -382,7 +369,6 @@ class Game extends Component {
   }
 
   selectPiece = (piece, fromSocket) => {
-    console.log('SELECT PIECE');
     const userId = this.props.user.id;
     const activeUser = this.state.players.find(p => p.isTurn);
     if (userId === activeUser.id) {

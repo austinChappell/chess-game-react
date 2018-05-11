@@ -25,8 +25,6 @@ class Board extends Component {
       squareWidth,
     } = this.props;
 
-    console.log('SQUARES INSIDE BOARD', squares);
-
     const boardWidth = squareWidth * 8;
 
     return (
