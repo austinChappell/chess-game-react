@@ -90,6 +90,7 @@ class Login extends Component {
         <div>
           <input
             onChange={e => this.handleChange(e, 'password')}
+            type="password"
             value={password}
           />
         </div>
