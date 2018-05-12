@@ -17,6 +17,7 @@ class Board extends Component {
 
   render() {    
     const {
+      activePlayerColor,
       kill,
       movePiece,
       pieces,
@@ -45,6 +46,7 @@ class Board extends Component {
               return (
                 <Piece
                   key={index}
+                  activePlayerColor={activePlayerColor}
                   foundSquare={foundSquare}
                   kill={kill}
                   top={foundSquare.top}
@@ -77,6 +79,7 @@ class Board extends Component {
             return (
               <Square
                 key={index}
+                activePlayerColor={activePlayerColor}
                 available={available}
                 column={column}
                 dark={dark}
@@ -86,11 +89,11 @@ class Board extends Component {
                 top={top}
                 width={squareWidth}
               />
-            )
+            );
           })}
         </div>
       </Fragment>
-    )
+    );
   }
 }
 

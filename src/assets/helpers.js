@@ -10,8 +10,10 @@ class Helpers {
   }
 
   findCurrentBishopMoves = (bishop, squares, pieceRow, pieceCol, pieces) => {
-    // console.log('BISHOP PIECES', pieces);
-    // console.log('BISHOP SQUARES', squares);
+    if (pieceRow === 4 && pieceCol === 8) {
+      console.log('BISHOP PIECES', pieces);
+      console.log('BISHOP SQUARES', squares);
+    }
     // console.log('BISHOP', bishop);
     let maxQ1 = 8;
     let maxQ2 = 8;
@@ -20,8 +22,9 @@ class Helpers {
 
     const options = squares.filter((square) => {
       // const currentPiece = this.findPieceBySquare(squares, pieces, square);
-      const currentPiece = square.piece ? square.piece : null;
-      const occupied = currentPiece !== null;
+      // const currentPiece = square.piece ? square.piece : null;
+      const currentPiece = pieces.find(p => p.row === square.row && p.column === square.column);
+      const occupied = currentPiece !== undefined;
       const {
         column: squareCol,
         row: squareRow,
@@ -55,7 +58,9 @@ class Helpers {
     return options.filter((square) => {
       // console.log('BISHOP SQUARES', squares);
       // const currentPiece = this.findPieceBySquare(squares, pieces, square);
-      const currentPiece = square.piece ? square.piece : null;
+      // const currentPiece = square.piece ? square.piece : null;
+      const currentPiece = pieces.find(p => p.row === square.row && p.column === square.column);
+
       const occupiedBySelf = currentPiece ? currentPiece.color === bishop.color : false;
       
       const {
@@ -110,7 +115,9 @@ class Helpers {
     const leftSideOpen = leftSideSquares.every(sq => !sq.piece);
 
     return squares.filter((square) => {
-      const currentPiece = square.piece ? square.piece : null;
+      // const currentPiece = square.piece ? square.piece : null;
+      const currentPiece = pieces.find(p => p.row === square.row && p.column === square.column);
+
       const occupiedBySelf = currentPiece ? currentPiece.color === king.color : false;
       const {
         column: squareCol,
@@ -147,7 +154,9 @@ class Helpers {
 
   findCurrentKnightMoves = (knight, squares, pieceRow, pieceCol, pieces) => {
     return squares.filter((square) => {
-      const currentPiece = square.piece ? square.piece : null;
+      // const currentPiece = square.piece ? square.piece : null;
+      const currentPiece = pieces.find(p => p.row === square.row && p.column === square.column);
+
       const occupiedBySelf = currentPiece ? currentPiece.color === knight.color : false;
       const {
         column: squareCol,
@@ -172,8 +181,10 @@ class Helpers {
 
     // eslint-disable-next-line
     return squares.filter((square) => {
-      const currentPiece = square.piece ? square.piece : null;
-      const occupied = currentPiece !== null;
+      // const currentPiece = square.piece ? square.piece : null;
+      const currentPiece = pieces.find(p => p.row === square.row && p.column === square.column);
+
+      const occupied = currentPiece !== undefined;
       const occupiedByOpp = currentPiece ? currentPiece.color !== pawn.color : false;
 
       // if opponent, expand column range to allow for diagonal movement
@@ -227,8 +238,10 @@ class Helpers {
     
     // get all options, and resize limits as needed
     const options = squares.filter((square) => {
-      const currentPiece = square.piece ? square.piece : null;
-      const occupied = currentPiece !== null;
+      // const currentPiece = square.piece ? square.piece : null;
+      const currentPiece = pieces.find(p => p.row === square.row && p.column === square.column);
+
+      const occupied = currentPiece !== undefined;
       const {
         column: squareCol,
         row: squareRow,
@@ -268,7 +281,9 @@ class Helpers {
     });
 
     return options.filter((square) => {
-      const currentPiece = square.piece ? square.piece : null;
+      // const currentPiece = square.piece ? square.piece : null;
+      const currentPiece = pieces.find(p => p.row === square.row && p.column === square.column);
+
       const occupiedBySelf = currentPiece ? currentPiece.color === rook.color : false;
       const {
         column: squareCol,

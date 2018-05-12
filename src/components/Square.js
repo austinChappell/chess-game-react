@@ -5,13 +5,14 @@ class Square extends Component {
 
   handleClick = () => {
     const {
+      activePlayerColor,
       available,
       column,
       movePiece,
       row,
     } = this.props;
     if (available) {
-      movePiece(row, column, true)
+      movePiece(row, column, true, false, activePlayerColor)
     }
   }
 

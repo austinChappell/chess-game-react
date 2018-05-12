@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 class Piece extends Component {
   handleClick = () => {
     const {
+      activePlayerColor,
       foundSquare,
       movePiece,
       piece,
@@ -11,7 +12,7 @@ class Piece extends Component {
     if (!foundSquare.available) {
       selectPiece(piece);
     } else {
-      movePiece(foundSquare.row, foundSquare.column, true);
+      movePiece(foundSquare.row, foundSquare.column, true, false, activePlayerColor);
       // kill(piece);
     }
   }

@@ -170,7 +170,7 @@ class Game extends Component {
           // opponent is moving
           // selectedPiece will be undefined when it comes back from the server
           if (selectedPiece && self.color !== selectedPiece.color) {
-            this.prepMove(row, column, followThrough, false);
+            this.prepMove(row, column, followThrough, false, selectedPiece.color);
           }
         }
       });
@@ -231,7 +231,7 @@ class Game extends Component {
   listenForCheck = (color, pieces, destinationIndex, squares) => {
     // get all living pieces of opposite color, omitting the one about to be killed
     const livingPieces = pieces.filter((p, index) => {
-      return p.alive && p.color !== color && index !== destinationIndex
+      return p.alive && p.color !== color && index !== destinationIndex;
     });
     // get current user's king
     const king = pieces.find(p => p.isKing && p.color === color);
@@ -248,18 +248,20 @@ class Game extends Component {
 
   listenForCheckmate = () => {
     let isCheckMate = true;
-    const pieces = this.state.pieces.map(p => ({ ...p }))
+    const pieces = this.state.pieces.map(p => ({ ...p }));
     const activeColor = this.state.players.find(p => p.isTurn).color;
-    // get all living pieces of opposite color, omitting the one about to be killed
-    const livingPieces = pieces.filter((p, index) => {
-      return p.alive && p.color === activeColor
+    const inActiveColor = this.state.players.find(p => !p.isTurn).color;
+
+    // get all living pieces of opposite color
+    const livingPieces = pieces.filter((p) => {
+      return p.alive && p.color === activeColor;
     });
 
+    
     livingPieces.forEach((piece) => {
       const moves = piece.generateCurrentOptions(piece, this.state.squares, piece.row, piece.column, this.state.pieces);
       moves.forEach((move) => {
-        const putsSelfInCheck = this.prepMove(move.row, move.column, false, piece);
-        console.log('MOVE', move, putsSelfInCheck, piece);
+        const putsSelfInCheck = this.prepMove(move.row, move.column, false, piece, inActiveColor);
         if (!putsSelfInCheck) {
           isCheckMate = false;
         }
@@ -285,9 +287,11 @@ class Game extends Component {
 
   // followThrough if set to true, will actually attempt the move
   // is set to false, it is just checking the result of the move
-  prepMove = (row, column, followThrough, preSelectedPiece) => {
+  prepMove = (row, column, followThrough, preSelectedPiece, colorToCheck) => {
+    // this is just here for debugging. remove when done
+
     const activePlayer = this.state.players.find(p => p.isTurn);
-    const squares = this.state.squares.map(sq => {
+    const squares = this.state.squares.map((sq) => {
       sq.piece = sq.piece ? { ...sq.piece } : null;
       return { ...sq };
     });
@@ -318,7 +322,7 @@ class Game extends Component {
       selected: false,
     };
 
-    const oldIndex = pieces.findIndex(p => p.row === row && p.column === column);
+    const oldIndex = preSelectedPiece ? pieces.findIndex(p => p.row === preSelectedPiece.row && p.column === preSelectedPiece.column) : -1;
     const index = pieces.indexOf(piece);
     if (preSelectedPiece) {
       newPieces[oldIndex] = newPiece;
@@ -340,7 +344,7 @@ class Game extends Component {
       activePlayer.castled = true;
     }
 
-    const putSelfInCheck = this.listenForCheck(activePlayer.color, newPieces, destinationIndex, squares);
+    const putSelfInCheck = this.listenForCheck(colorToCheck, newPieces, destinationIndex, squares);
     if (!followThrough) {
       return putSelfInCheck;
     } else if (putSelfInCheck) {
@@ -492,12 +496,15 @@ class Game extends Component {
       :
       <h2>Click piece and square to select and move.</h2>;
 
+    const activePlayerColor = players.find(p => p.isTurn).color;
+
     return (
       <div className="Game">
         <div className="warning">
           {warning}
         </div>
         <Board
+          activePlayerColor={activePlayerColor}
           kill={this.kill}
           movePiece={this.prepMove}
           pieces={pieces}
