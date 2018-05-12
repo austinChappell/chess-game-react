@@ -255,15 +255,16 @@ class Game extends Component {
       return p.alive && p.color === activeColor
     });
 
-    livingPieces.forEach(piece => {
+    livingPieces.forEach((piece) => {
       const moves = piece.generateCurrentOptions(piece, this.state.squares, piece.row, piece.column, this.state.pieces);
-      moves.forEach(move => {
+      moves.forEach((move) => {
         const putsSelfInCheck = this.prepMove(move.row, move.column, false, piece);
+        console.log('MOVE', move, putsSelfInCheck, piece);
         if (!putsSelfInCheck) {
           isCheckMate = false;
         }
-      })
-    })
+      });
+    });
     return isCheckMate;
   }
 
