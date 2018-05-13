@@ -24,14 +24,14 @@ class Home extends Component {
 
     // TODO: this is a bug
     this.socket.on('START_GAME', (game) => {
-      console.log('START GAME', game);
-      this.startGame(game);
+      this.receiveGame(game);
     });
   }
 
   componentWillUnmount() {
     this.socket.removeAllListeners();
     this.socket.close();
+    console.log('HOME COMPONENT UNMOUNTED');
   }
 
   createGame = () => {
@@ -70,15 +70,6 @@ class Home extends Component {
       gameId: game.id,
       whiteId: game.userId,
     });
-  }
-
-  startGame = (game) => {
-    if (game.userId === this.props.user.id) {
-      this.setState({
-        gameId: game.id,
-        whiteId: game.userId,
-      });
-    }
   }
 
   render() {
