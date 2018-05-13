@@ -14,4 +14,13 @@
     padding: 20px 40px;
     border-radius: 5px;
   }
+  .pieces {
+    display: flex;
+  }
+  .piece {
+    cursor: pointer;
+    img {
+      width: 50px;
+    }
+  }
 }
