@@ -11,8 +11,6 @@ class Helpers {
 
   findCurrentBishopMoves = (bishop, squares, pieceRow, pieceCol, pieces) => {
     if (pieceRow === 4 && pieceCol === 8) {
-      console.log('BISHOP PIECES', pieces);
-      console.log('BISHOP SQUARES', squares);
     }
     // console.log('BISHOP', bishop);
     let maxQ1 = 8;
@@ -219,7 +217,10 @@ class Helpers {
             } = pawn;
             return sq.row === row + orientation && sq.column === column;
           });
-          const pieceInFront = this.findPieceBySquare(squares, pieces, squareInFront);
+          const pieceInFront = squareInFront ?
+            this.findPieceBySquare(squares, pieces, squareInFront)
+            :
+            null;
           const blocked = pieceInFront !== null;
           return !isLateral && !hasMoved && !occupied && !blocked;
         } else if (!sameRow && inRange) {
