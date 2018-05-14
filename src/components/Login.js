@@ -12,6 +12,7 @@ const {
 
 class Login extends Component {
   state = {
+    signingIn: false,
     signingUp: false,
     password: '',
     username: '',
@@ -24,13 +25,15 @@ class Login extends Component {
   }
 
   handleRes = (res) => {
-    if (res.username && this.state.signingUp) {
-      this.setState({ signingUp: false }, () => {
-        this.signIn();
-      });
-    } else if (res.token) {
-      this.setUser(res);
-    }
+    this.setState({ signingIn: false }, () => {
+      if (res.username && this.state.signingUp) {
+        this.setState({ signingUp: false }, () => {
+          this.signIn();
+        });
+      } else if (res.token) {
+        this.setUser(res);
+      }
+    });
   }
 
   setUser = (user) => {
@@ -38,7 +41,9 @@ class Login extends Component {
   }
 
   signIn = () => {
-    login(this.state, this.handleRes, this.state.signingUp);
+    this.setState({ signingIn: true }, () => {
+      login(this.state, this.handleRes, this.state.signingUp);
+    });
   }
 
   toggleAuth = () => {
@@ -48,6 +53,8 @@ class Login extends Component {
   render() {
     const {
       password,
+      signingIn,
+      signingUp,
       username,
     } = this.state;
 
@@ -72,6 +79,15 @@ class Login extends Component {
       :
       null;
 
+    const signingInMessage = this.state.signingIn ?
+      (
+        <div>
+          <p>Please wait. Signing in to free Heroku server. This could take up to 15 seconds.</p>
+        </div>
+      )
+      :
+      null;
+
     return (
       <div className="Login">
         {authRedirect}
@@ -81,6 +97,7 @@ class Login extends Component {
           </div>
           <div>
             <input
+              disabled={signingIn}
               onChange={e => this.handleChange(e, 'username')}
               value={username}
             />
@@ -90,17 +107,20 @@ class Login extends Component {
           </div>
           <div>
             <input
+              disabled={signingIn}
               onChange={e => this.handleChange(e, 'password')}
               type="password"
               value={password}
             />
           </div>
           <button
+            disabled={signingIn}
             onClick={this.signIn}
           >
-            {this.state.signingUp ? 'Sign Up' : 'Login'}
+            {signingUp ? 'Sign Up' : 'Login'}
           </button>
           {switchMessage}
+          {signingInMessage}
         </div>
       </div>
     );

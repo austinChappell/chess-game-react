@@ -62,10 +62,6 @@ const generateSquares = (reverse) => {
   return squares;
 };
 
-// randomly assign mutli players by who has the lower id
-// will either be 1 or 0
-const playerOneLower = Math.floor(Math.random() * 2) === 0;
-
 class Game extends Component {
   state = {
     gameOver: false,
@@ -188,7 +184,7 @@ class Game extends Component {
       this.socket.on('RECEIVE_IDS', ({ whiteId, blackId }) => {
         const { players } = this.state;
         const blackPlayer = players.find(p => p.color === 'black');
-        const whitePlayer = players.find(p => p. color === 'white');
+        const whitePlayer = players.find(p => p.color === 'white');
         blackPlayer.id = blackId;
         whitePlayer.id = Number(whiteId);
         this.setState({ players });

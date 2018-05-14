@@ -18,15 +18,7 @@
     width: 100%;
   }
   button {
-    background-color: darkgreen;
-    color: white;
-    font-size: 20px;
-    width: 100%;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    box-sizing: border-box;
-    padding: 5px 10px;
+    @include button(100%);
   }
   span {
     color: royalblue;

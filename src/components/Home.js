@@ -31,7 +31,6 @@ class Home extends Component {
   componentWillUnmount() {
     this.socket.removeAllListeners();
     this.socket.close();
-    console.log('HOME COMPONENT UNMOUNTED');
   }
 
   createGame = () => {
@@ -79,12 +78,15 @@ class Home extends Component {
       waiting,
       whiteId,
     } = this.state;
+
+    const { user } = this.props;
+
     const redirect = gameId ?
       <Redirect to={`/game/${gameId}?start_id=${whiteId}`} />
       :
       null;
 
-    const buttonText = waiting ? 'Looking for Opponent' : 'Start a Game';
+    const buttonText = waiting ? 'Looking for Opponent' : 'Find Opponent';
     const errorMessage = error ?
       (
         <p style={{ color: 'red' }}>{error}</p>
@@ -93,7 +95,8 @@ class Home extends Component {
     return (
       <div className="Home">
         {redirect}
-        <h1>Home Component</h1>
+        <h1>Welcome, {user.username}</h1>
+        <p>To play an opponent, click below. Or to play locally, click &quot;Single Player&quot; in the navigation bar above.</p>
         <button
           disabled={waiting}
           onClick={this.createGame}

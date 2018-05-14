@@ -10,6 +10,23 @@ body {
   display: none;
 }
 
+@mixin button ($width) {
+  background-color: darkgreen;
+  color: white;
+  font-size: 20px;
+  width: $width;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 5px 10px;
+  &:disabled {
+    background-color: #eeeeee;
+    color: #cccccc;
+    cursor: not-allowed;
+  }
+}
+
 @import './App';
 @import './Board';
 @import './Game';

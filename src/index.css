@@ -68,6 +68,10 @@ body {
     cursor: pointer;
     box-sizing: border-box;
     padding: 5px 10px; }
+    .Login button:disabled {
+      background-color: #eeeeee;
+      color: #cccccc;
+      cursor: not-allowed; }
   .Login span {
     color: royalblue;
     cursor: pointer; }
