@@ -12,6 +12,7 @@ const {
 
 class Login extends Component {
   state = {
+    error: null,
     signingIn: false,
     signingUp: false,
     password: '',
@@ -32,6 +33,12 @@ class Login extends Component {
         });
       } else if (res.token) {
         this.setUser(res);
+      } else if (res.error) {
+        if (res.error.detail) {
+          this.setState({ error: res.error.detail });
+        } else {
+          this.setState({ error: 'Invalid credentials' });
+        }
       }
     });
   }
@@ -41,7 +48,7 @@ class Login extends Component {
   }
 
   signIn = () => {
-    this.setState({ signingIn: true }, () => {
+    this.setState({ error: null, signingIn: true }, () => {
       login(this.state, this.handleRes, this.state.signingUp);
     });
   }
@@ -88,6 +95,15 @@ class Login extends Component {
       :
       null;
 
+    const errorMessage = this.state.error ?
+      (
+        <div className="error">
+          <p>{this.state.error}</p>
+        </div>
+      )
+      :
+      null;
+
     return (
       <div className="Login">
         {authRedirect}
@@ -113,6 +129,7 @@ class Login extends Component {
               value={password}
             />
           </div>
+          {errorMessage}
           <button
             disabled={signingIn}
             onClick={this.signIn}

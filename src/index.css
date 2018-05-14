@@ -75,6 +75,8 @@ body {
   .Login span {
     color: royalblue;
     cursor: pointer; }
+  .Login .error {
+    color: red; }
 
 .Modal {
   z-index: 20;
