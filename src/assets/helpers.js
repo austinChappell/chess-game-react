@@ -10,17 +10,12 @@ class Helpers {
   }
 
   findCurrentBishopMoves = (bishop, squares, pieceRow, pieceCol, pieces) => {
-    if (pieceRow === 4 && pieceCol === 8) {
-    }
-    // console.log('BISHOP', bishop);
     let maxQ1 = 8;
     let maxQ2 = 8;
     let maxQ3 = 8;
     let maxQ4 = 8;
 
     const options = squares.filter((square) => {
-      // const currentPiece = this.findPieceBySquare(squares, pieces, square);
-      // const currentPiece = square.piece ? square.piece : null;
       const currentPiece = pieces.find(p => p.row === square.row && p.column === square.column);
       const occupied = currentPiece !== undefined;
       const {

@@ -232,6 +232,18 @@ class Game extends Component {
     // get current user's king
     const king = pieces.find(p => p.isKing && p.color === color);
 
+    // this factors in check if king moves to kill
+    const kingTarget = pieces.find((p) => {
+      const isMatch = p.row === king.row && p.column === king.column;
+      const notSelf = p.color !== color;
+      return isMatch && notSelf;
+    });
+
+    if (kingTarget) {
+      kingTarget.row = null;
+      kingTarget.column = null;
+    }
+
     // all options for living pieces
     const allMoves = [];
     livingPieces.forEach((piece) => {
@@ -253,11 +265,10 @@ class Game extends Component {
       return p.alive && p.color === activeColor;
     });
 
-    
     livingPieces.forEach((piece) => {
       const moves = piece.generateCurrentOptions(piece, this.state.squares, piece.row, piece.column, this.state.pieces);
       moves.forEach((move) => {
-        const putsSelfInCheck = this.prepMove(move.row, move.column, false, piece, inActiveColor);
+        const putsSelfInCheck = this.prepMove(move.row, move.column, false, piece, activeColor);
         if (!putsSelfInCheck) {
           isCheckMate = false;
         }
