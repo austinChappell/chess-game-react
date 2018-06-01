@@ -22,9 +22,12 @@ class Board extends Component {
       movePiece,
       pieces,
       selectPiece,
+      selectedPiece,
       squares,
       squareWidth,
     } = this.props;
+
+    const allowedMoves = selectedPiece ? selectedPiece.allowedMoves : [];
 
     const boardWidth = squareWidth * 8;
 
@@ -62,12 +65,15 @@ class Board extends Component {
           })}
           {squares.map((square, index) => {
             const {
-              available,
               column,
               top,
               left,
               row,
             } = square;
+
+            const available = allowedMoves.find(m => {
+              return m.row === square.row && m.column === square.column;
+            });
 
             // mark a square as occupied
             const foundPiece = findPieceBySquare(squares, pieces, square);

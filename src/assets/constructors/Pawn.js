@@ -27,16 +27,7 @@ class Pawn extends ChessPiece {
     this.minY = orientation < 0 ? orientation : 0;
     this.maxX = 1;
     this.minX = -1;
-    this.allowedMoves = [
-      { col: 0, row: 1 },
-      { col: 1, row: 1 },
-      { col: -1, row: 1 },
-      { col: 0, row: -1 },
-      { col: 1, row: -1 },
-      { col: -1, row: -1 },
-      { col: 0, row: 2 },
-      { col: 0, row: -2 },
-    ];
+    this.allowedMoves = [];
     this.generateCurrentOptions = (pawn, squares, pieceRow, pieceCol, pieces) => {
       const { hasMoved, orientation } = pawn;
       

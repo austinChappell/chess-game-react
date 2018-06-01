@@ -12,4 +12,4 @@ export default {
   Pawn,
   Queen,
   Rook,
-}
+};

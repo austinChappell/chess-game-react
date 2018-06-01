@@ -63,67 +63,88 @@ const generateSquares = (reverse) => {
 };
 
 class Game extends Component {
-  state = {
-    gameOver: false,
-    players: [
-      {
-        castled: false,
-        color: 'black',
-        hasBeenChecked: false,
-        isTurn: false,
-        label: 'Player One',
-      },
-      {
-        castled: false,
-        color: 'white',
-        hasBeenChecked: false,
-        isTurn: true,
-        label: 'Player Two',
-      },
-    ],
-    pieces: [
-      new Pawn('white', 7, 1, -1),
-      new Pawn('white', 7, 2, -1),
-      new Pawn('white', 7, 3, -1),
-      new Pawn('white', 7, 4, -1),
-      new Pawn('white', 7, 5, -1),
-      new Pawn('white', 7, 6, -1),
-      new Pawn('white', 7, 7, -1),
-      new Pawn('white', 7, 8, -1),
-      new Rook('white', 8, 1),
-      new Knight('white', 8, 2),
-      new Bishop('white', 8, 3),
-      new Queen('white', 8, 4),
-      new King('white', 8, 5),
-      new Bishop('white', 8, 6),
-      new Knight('white', 8, 7),
-      new Rook('white', 8, 8),
-      new Pawn('black', 2, 1, 1),
-      new Pawn('black', 2, 2, 1),
-      new Pawn('black', 2, 3, 1),
-      new Pawn('black', 2, 4, 1),
-      new Pawn('black', 2, 5, 1),
-      new Pawn('black', 2, 6, 1),
-      new Pawn('black', 2, 7, 1),
-      new Pawn('black', 2, 8, 1),
-      new Rook('black', 1, 1),
-      new Knight('black', 1, 2),
-      new Bishop('black', 1, 3),
-      new Queen('black', 1, 4),
-      new King('black', 1, 5),
-      new Bishop('black', 1, 6),
-      new Knight('black', 1, 7),
-      new Rook('black', 1, 8),
-    ],
-    squares: generateSquares(),
-    warning: null,
+  constructor(props) {
+    super(props);
+    this.socket = io(baseAPI);
+    this.socket.on('CREATE_SQUARES', (data) => {
+      console.log('DATa', data);
+      const pieces = JSON.parse(data.pieces);
+      console.log('PIECES', pieces);
+      const { squares } = data;
+      this.setPieces(pieces);
+      this.setSquares(squares);
+    });
+
+    this.socket.on('UPDATE_PIECES', (pieces) => {
+      this.updatePieces(pieces);
+    });
+
+    this.state = {
+      gameOver: false,
+      players: [
+        {
+          castled: false,
+          color: 'black',
+          hasBeenChecked: false,
+          isTurn: false,
+          label: 'Player One',
+        },
+        {
+          castled: false,
+          color: 'white',
+          hasBeenChecked: false,
+          isTurn: true,
+          label: 'Player Two',
+        },
+      ],
+      pieces: [
+        new Pawn('white', 7, 1, -1),
+        new Pawn('white', 7, 2, -1),
+        new Pawn('white', 7, 3, -1),
+        new Pawn('white', 7, 4, -1),
+        new Pawn('white', 7, 5, -1),
+        new Pawn('white', 7, 6, -1),
+        new Pawn('white', 7, 7, -1),
+        new Pawn('white', 7, 8, -1),
+        new Rook('white', 8, 1),
+        new Knight('white', 8, 2),
+        new Bishop('white', 8, 3),
+        new Queen('white', 8, 4),
+        new King('white', 8, 5),
+        new Bishop('white', 8, 6),
+        new Knight('white', 8, 7),
+        new Rook('white', 8, 8),
+        new Pawn('black', 2, 1, 1),
+        new Pawn('black', 2, 2, 1),
+        new Pawn('black', 2, 3, 1),
+        new Pawn('black', 2, 4, 1),
+        new Pawn('black', 2, 5, 1),
+        new Pawn('black', 2, 6, 1),
+        new Pawn('black', 2, 7, 1),
+        new Pawn('black', 2, 8, 1),
+        new Rook('black', 1, 1),
+        new Knight('black', 1, 2),
+        new Bishop('black', 1, 3),
+        new Queen('black', 1, 4),
+        new King('black', 1, 5),
+        new Bishop('black', 1, 6),
+        new Knight('black', 1, 7),
+        new Rook('black', 1, 8),
+      ],
+      squares: [],
+      warning: null,
+    };
   }
 
   componentDidMount() {
     const gameId = this.props.match.params.id;
     const query = this.props.location.search;
     const whiteId = query.split('=')[1];
-    this.setMutliPlayer(gameId, whiteId);
+
+    this.socket.emit('INIT_GAME');
+    if (gameId) {
+      this.setMutliPlayer(gameId, whiteId);
+    }
   }
 
   componentWillUnmount() {
@@ -132,7 +153,6 @@ class Game extends Component {
 
   setMutliPlayer = (gameId, whiteId) => {
     this.setState({ gameId }, () => {
-      this.socket = io(baseAPI);
 
       const room = gameId;
 
@@ -198,6 +218,34 @@ class Game extends Component {
       }
     });
   }
+
+  clickPiece = (piece) => {
+    const { user } = this.props;
+    const data = { piece, user };
+    this.socket.emit('SELECT_PIECE', data);
+  }
+
+  updatePieces = (pieces) => {
+    this.setState({ pieces });
+  }
+
+  setPieces = (pieces) => {
+    this.setState({ pieces });
+  }
+
+  setSquares = (squares) => {
+    this.setState({ squares });
+  }
+
+
+
+
+
+
+
+
+  // =========================================
+  // OLD STUFF
 
   clearSquares = () => {
     const { squares } = this.state;
@@ -515,7 +563,8 @@ class Game extends Component {
           kill={this.kill}
           movePiece={this.prepMove}
           pieces={pieces}
-          selectPiece={this.selectPiece}
+          selectedPiece={pieces.find(p => p.selected)}
+          selectPiece={this.clickPiece}
           squares={squares}
           squareWidth={80}
         />
